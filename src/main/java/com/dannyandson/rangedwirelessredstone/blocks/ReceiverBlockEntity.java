@@ -46,4 +46,9 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
     public BlockPos getPos() {
         return this.worldPosition;
     }
+
+    @Override
+    public Integer getCellIndex() {
+        return null;
+    }
 }

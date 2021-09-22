@@ -3,7 +3,10 @@ package com.dannyandson.rangedwirelessredstone;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class RenderHelper {
 
@@ -38,5 +41,11 @@ public class RenderHelper {
         poseStack.translate(0,0,1);
         com.dannyandson.tinyredstone.blocks.RenderHelper.drawRectangle(builder,poseStack,0,1,0,0.25f,sprite_side,combinedLight,alpha);
     }
+
+    public static TextureAtlasSprite getSprite(ResourceLocation resourceLocation)
+    {
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(resourceLocation);
+    }
+
 
 }

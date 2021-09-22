@@ -11,5 +11,6 @@ public interface IWirelessComponent {
     void setChannel(int channel);
 
     BlockPos getPos();
+    Integer getCellIndex();
 
 }

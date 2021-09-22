@@ -2,7 +2,6 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.gui.ChannelSelectGUI;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
-import com.dannyandson.tinyredstone.blocks.PanelTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

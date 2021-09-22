@@ -59,7 +59,8 @@ public class ChannelSelectGUI extends Screen {
     private void changeChannel(int change)
     {
         int channel = component.getChannel()+change;
-        ModNetworkHandler.sendToServer(new SetChannel(component.getPos(), channel));
+        ModNetworkHandler.sendToServer(new SetChannel(component.getPos(), component.getCellIndex(), channel));
+        component.setChannel(channel);
 
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
