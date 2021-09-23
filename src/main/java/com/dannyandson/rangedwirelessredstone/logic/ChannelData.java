@@ -1,5 +1,6 @@
 package com.dannyandson.rangedwirelessredstone.logic;
 
+import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -87,17 +88,16 @@ public class ChannelData {
         if (saveData.channelPosMap.containsKey(channel)) {
             for (String tPos : saveData.channelPosMap.get(channel)) {
                 int[] tPosValues = getXYZiFromPosString(tPos);
-                int x = tPosValues[0], y = tPosValues[1] , z = tPosValues[2];
-                boolean isCell = tPosValues.length==4;
-                int range = isCell?32:128;
+                int x = tPosValues[0], y = tPosValues[1], z = tPosValues[2];
+                boolean isCell = tPosValues.length == 4;
+                int range = isCell ? Config.RANGE_CELL.get() : Config.RANGE_BLOCK.get();
                 if (
-                        //TODO config
                         Math.abs(x - pos.getX()) <= range &&
                                 Math.abs(y - pos.getY()) <= range &&
                                 Math.abs(z - pos.getZ()) <= range
                 ) {
                     Integer tSignal = saveData.signalMap.get(tPos);
-                    if(tSignal!=null && tSignal>signal)
+                    if (tSignal != null && tSignal > signal)
                         signal = tSignal;
                 }
             }

@@ -17,7 +17,7 @@ version = '1.0.0'
 group = 'com.dannyandson.rangedwirelessredstone'
 archivesBaseName = 'rangedwirelessredstone'
 
-def tinyRedstoneVersion = '1.17.1-2.2.6'
+def tinyRedstoneVersion = '1.17.1-2.2.9'
 def theOneProbeFileID = '3430022'
 def jeiFileID = '3448057'
 

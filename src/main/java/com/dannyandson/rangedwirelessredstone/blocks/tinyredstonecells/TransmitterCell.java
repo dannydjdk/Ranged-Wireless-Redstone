@@ -125,4 +125,10 @@ public class TransmitterCell extends AbstractWirelessCell {
             }
         }
     }
+
+    @Override
+    public void onRemove(PanelCellPos cellPos) {
+        if (cellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel)
+            ChannelData.getChannelData(serverLevel).removeTransmitter(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex());
+    }
 }

@@ -52,6 +52,17 @@ public class ReceiverBlock extends BaseEntityBlock {
         };
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.FACING);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(BlockStateProperties.FACING, context.getHorizontalDirection());
+    }
+
     /**
      * Called to determine whether to allow the block to handle its own indirect power rather than using the default rules.
      * @return Whether Block#isProvidingWeakPower should be called when determining indirect power
