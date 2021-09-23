@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rangedwirelessredstone:block/redstone_receiver"
+    }
+  }
+}

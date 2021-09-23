@@ -1,7 +1,7 @@
 package com.dannyandson.rangedwirelessredstone.setup;
 
-import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.Receiver;
-import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.Transmitter;
+import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.ReceiverCell;
+import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TransmitterCell;
 import com.dannyandson.rangedwirelessredstone.items.WirelessPanelCellItem;
 import com.dannyandson.tinyredstone.TinyRedstone;
 import net.minecraft.world.item.Item;
@@ -15,7 +15,7 @@ public class TinyRedstoneRegistration {
 
     //called at FMLCommonSetupEvent in ModSetup
     public static void registerPanelCells(){
-        TinyRedstone.registerPanelCell(Receiver.class, TINY_RECEIVER_ITEM.get());
-        TinyRedstone.registerPanelCell(Transmitter.class, TINY_TRANSMITTER_ITEM.get());
+        TinyRedstone.registerPanelCell(ReceiverCell.class, TINY_RECEIVER_ITEM.get());
+        TinyRedstone.registerPanelCell(TransmitterCell.class, TINY_TRANSMITTER_ITEM.get());
     }
 }
