@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "rangedwirelessredstone:redstone_transmitter",
+    "rangedwirelessredstone:redstone_receiver"
+  ]
+}
