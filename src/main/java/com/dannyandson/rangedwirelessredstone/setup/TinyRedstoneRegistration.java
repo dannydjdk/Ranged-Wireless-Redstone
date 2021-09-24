@@ -4,8 +4,8 @@ import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.ReceiverC
 import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TransmitterCell;
 import com.dannyandson.rangedwirelessredstone.items.WirelessPanelCellItem;
 import com.dannyandson.tinyredstone.TinyRedstone;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.RegistryObject;
 
 public class TinyRedstoneRegistration {
     public static final RegistryObject<Item> TINY_TRANSMITTER_ITEM = Registration.ITEMS.register("tiny_redstone_transmitter", WirelessPanelCellItem::new);

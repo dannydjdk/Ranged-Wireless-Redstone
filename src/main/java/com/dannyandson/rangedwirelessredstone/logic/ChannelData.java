@@ -2,10 +2,10 @@ package com.dannyandson.rangedwirelessredstone.logic;
 
 import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.WorldSavedData;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ public class ChannelData {
 
     public static Map<Integer, ChannelData> levelChannelDataMap = new HashMap<>();
 
-    public static ChannelData getChannelData(ServerLevel level) {
+    public static ChannelData getChannelData(ServerWorld level) {
         int dim = level.dimension().hashCode();
         if (!levelChannelDataMap.containsKey(dim))
             levelChannelDataMap.put(dim, new ChannelData(level));
@@ -22,8 +22,8 @@ public class ChannelData {
 
     private final ChannelSaveData saveData;
 
-    private ChannelData(ServerLevel level) {
-        this.saveData = level.getDataStorage().computeIfAbsent(ChannelSaveData::new, ChannelSaveData::new, RangedWirelessRedstone.MODID);
+    private ChannelData(ServerWorld level) {
+        this.saveData = level.getDataStorage().computeIfAbsent(ChannelSaveData::new, RangedWirelessRedstone.MODID);
     }
 
     /**
@@ -32,8 +32,8 @@ public class ChannelData {
      * @param pos     Block position of the transmitter
      * @param channel The channel of the transmitter
      */
-    public void setTransmitterChannel(BlockPos pos,int channel){
-        setTransmitterChannel(pos.toShortString(),channel);
+    public void setTransmitterChannel(BlockPos pos, int channel){
+        setTransmitterChannel(getStringFromPos(pos),channel);
     }
     /**
      * Set or change the channel of a transmitter.
@@ -43,7 +43,7 @@ public class ChannelData {
      * @param channel The channel of the transmitter
      */
     public void setTransmitterChannel(BlockPos pos,int cellIndex,int channel){
-        setTransmitterChannel(pos.toShortString() + ", " + cellIndex,channel);
+        setTransmitterChannel(getStringFromPos(pos) + ", " + cellIndex,channel);
     }
     private void setTransmitterChannel(String pos, int channel) {
         saveData.setTransmitterChannel(pos, channel);
@@ -57,7 +57,7 @@ public class ChannelData {
      * @param signal The signal strength to be transmitted
      */
     public void setTransmitterSignal(BlockPos pos, int signal) {
-        setTransmitterSignal(pos.toShortString(),signal);
+        setTransmitterSignal(getStringFromPos(pos),signal);
     }
     /**
      * Set the redstone value to be transmitted by a transmitter
@@ -67,7 +67,7 @@ public class ChannelData {
      * @param signal The signal strength to be transmitted
      */
     public void setTransmitterSignal(BlockPos pos, int cellIndex, int signal) {
-        setTransmitterSignal(pos.toShortString() + ", " + cellIndex,signal);
+        setTransmitterSignal(getStringFromPos(pos) + ", " + cellIndex,signal);
     }
     private void setTransmitterSignal(String pos, int signal) {
         saveData.signalMap.put(pos, signal);
@@ -106,10 +106,10 @@ public class ChannelData {
     }
 
     public void removeTransmitter(BlockPos pos){
-        removeTransmitter(pos.toShortString());
+        removeTransmitter(getStringFromPos(pos));
     }
     public void removeTransmitter(BlockPos pos, int cellIndex){
-        removeTransmitter(pos.toShortString() + ", " + cellIndex);
+        removeTransmitter(getStringFromPos(pos) + ", " + cellIndex);
     }
     private void removeTransmitter(String pos) {
         Integer channel = saveData.posChannelMap.remove(pos);
@@ -130,36 +130,41 @@ public class ChannelData {
     }
 
     private static int[] getXYZiFromPosString(String pos){
-        String[] posArray = pos.split(",\s+");
+        String[] posArray = pos.split(",\\s+");
         int[] posArrayInt = new int[posArray.length];
         for (int i =0 ; i<posArray.length ; i++)
             posArrayInt[i] = Integer.parseInt(posArray[i]);
         return posArrayInt;
     }
 
-    private static class ChannelSaveData extends SavedData {
+    private static String getStringFromPos(BlockPos pos){
+        return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
+    }
+
+    private static class ChannelSaveData extends WorldSavedData {
         public Map<String, Integer> posChannelMap = new HashMap<>();
         public Map<Integer, List<String>> channelPosMap = new HashMap<>();
         public Map<String, Integer> signalMap = new HashMap<>();
 
 
         public ChannelSaveData() {
+            super(RangedWirelessRedstone.MODID);
         }
 
-        public ChannelSaveData(CompoundTag nbt) {
-            CompoundTag channelData = nbt.getCompound("channeldata");
-            CompoundTag signalData = nbt.getCompound("signaldata");
+        @Override
+        public void load(CompoundNBT nbt) {
+            CompoundNBT channelData = nbt.getCompound("channeldata");
+            CompoundNBT signalData = nbt.getCompound("signaldata");
             for (String key : channelData.getAllKeys()) {
                 this.setTransmitterChannel(key, channelData.getInt(key));
                 this.signalMap.put(key, signalData.getInt(key));
 
-            }
-        }
+            }        }
 
         @Override
-        public CompoundTag save(CompoundTag nbt) {
-            CompoundTag channelData = new CompoundTag(),
-                    signalData = new CompoundTag();
+        public CompoundNBT save(CompoundNBT nbt) {
+            CompoundNBT channelData = new CompoundNBT(),
+                    signalData = new CompoundNBT();
 
             for (Map.Entry<String, Integer> entry : posChannelMap.entrySet()) {
                 channelData.putInt(entry.getKey(), entry.getValue());

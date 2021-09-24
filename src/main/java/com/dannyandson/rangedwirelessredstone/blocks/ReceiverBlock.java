@@ -2,33 +2,31 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.gui.ChannelSelectGUI;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-public class ReceiverBlock extends BaseEntityBlock {
+public class ReceiverBlock extends Block {
+
+    private static final VoxelShape shape =  Block.box(0,0,0,16,2,16);
 
     public ReceiverBlock() {
         super(
@@ -37,38 +35,30 @@ public class ReceiverBlock extends BaseEntityBlock {
                         .strength(2.0f));
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new ReceiverBlockEntity(blockPos, blockState);
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return (level1, blockPos, blockState, t) -> {
-            if (t instanceof ReceiverBlockEntity receiverEntity)
-                receiverEntity.tick();
-        };
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+         return new ReceiverBlockEntity();
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+         builder.add(BlockStateProperties.FACING);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         return defaultBlockState().setValue(BlockStateProperties.FACING, context.getHorizontalDirection());
     }
 
-    /**
-     * Called to determine whether to allow the block to handle its own indirect power rather than using the default rules.
-     * @return Whether Block#isProvidingWeakPower should be called when determining indirect power
-     */
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction directionFromNeighborToThis) {
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         //returning false to override default behavior to prevent redstone to allow block entity to determine output
         return false;
     }
@@ -81,37 +71,34 @@ public class ReceiverBlock extends BaseEntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public int getDirectSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
-        if (blockGetter.getBlockEntity(pos) instanceof IWirelessComponent component) {
-            return component.getSignal();
+    public int getDirectSignal(BlockState blockState, IBlockReader blockGetter, BlockPos pos, Direction direction) {
+        TileEntity te = blockGetter.getBlockEntity(pos);
+        if (te instanceof IWirelessComponent) {
+            return ((IWirelessComponent)te).getSignal();
         }
         return super.getDirectSignal(blockState, blockGetter, pos, direction);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
+    public int getSignal(BlockState blockState, IBlockReader blockGetter, BlockPos pos, Direction direction) {
         return getDirectSignal(blockState, blockGetter, pos, direction);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        if (level.getBlockEntity(pos) instanceof IWirelessComponent component){
+    public ActionResultType use(BlockState blockState, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockHitResult) {
+        TileEntity te = level.getBlockEntity(pos);
+        if (level.getBlockEntity(pos) instanceof IWirelessComponent){
             if (level.isClientSide())
-                ChannelSelectGUI.open(component);
-            return InteractionResult.CONSUME;
+                ChannelSelectGUI.open((IWirelessComponent) te);
+            return ActionResultType.CONSUME;
         }
         return super.use(blockState, level, pos, player, hand, blockHitResult);
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState p_49232_) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return Block.box(0,0,0,16,2,16);
+    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+        return shape;
     }
 }

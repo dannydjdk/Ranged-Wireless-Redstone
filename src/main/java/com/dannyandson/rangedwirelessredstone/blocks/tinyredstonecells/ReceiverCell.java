@@ -4,17 +4,18 @@ import com.dannyandson.rangedwirelessredstone.RenderHelper;
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
 import com.dannyandson.tinyredstone.blocks.PanelCellPos;
 import com.dannyandson.tinyredstone.blocks.Side;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class ReceiverCell extends AbstractWirelessCell{
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
-        VertexConsumer builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
+    public void render(MatrixStack poseStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay, float alpha) {
+        IVertexBuilder builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
 
         //render slab
         RenderHelper.drawQuarterSlab(poseStack,builder,RenderHelper.SPRITE_PANEL_LIGHT,RenderHelper.SPRITE_PANEL_DARK,combinedLight,alpha);
@@ -100,8 +101,9 @@ public class ReceiverCell extends AbstractWirelessCell{
     @Override
     public boolean tick(PanelCellPos cellPos) {
         this.panelCellPos=cellPos;
-        if (cellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel){
-            int signal = ChannelData.getChannelData(serverLevel).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
+        World world = cellPos.getPanelTile().getLevel();
+        if (cellPos.getPanelTile().getLevel() instanceof ServerWorld){
+            int signal = ChannelData.getChannelData((ServerWorld) world).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
             if (signal!=getSignal()){
                 setSignal(signal);
                 return true;

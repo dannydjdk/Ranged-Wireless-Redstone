@@ -1,15 +1,14 @@
 package com.dannyandson.rangedwirelessredstone.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ModWidget extends AbstractWidget {
+public class ModWidget extends Widget {
 
     public enum HAlignment {
         LEFT, CENTER, RIGHT
@@ -25,10 +24,10 @@ public class ModWidget extends AbstractWidget {
     private int bgcolor=-1;
     private int textWidth;
     private int textHeight;
-    private Component toolTipTextComponent;
+    private ITextComponent toolTipTextComponent;
     private IPressable pressedAction=null;
 
-    public ModWidget(int x, int y, int width, int height, Component title, int textColor, int bgColor)
+    public ModWidget(int x, int y, int width, int height, ITextComponent title, int textColor, int bgColor)
     {
         super(x, y, width, height, title);
         this.color=textColor;
@@ -39,24 +38,24 @@ public class ModWidget extends AbstractWidget {
         }
     }
 
-    public ModWidget(int x, int y, int width, int height, Component title, int textColor)
+    public ModWidget(int x, int y, int width, int height, ITextComponent title, int textColor)
     {
         this(x,y,width,height,title,textColor,-1);
 
     }
-    public ModWidget(int x, int y, int width, int height, Component title)
+    public ModWidget(int x, int y, int width, int height, ITextComponent title)
     {
         this(x,y,width,height,title,0xFFFFFFFF,-1);
 
     }
     public ModWidget(int x, int y, int width, int height, int bgColor)
     {
-        this(x,y,width,height,Component.nullToEmpty(""),0xFFFFFFFF,bgColor);
+        this(x,y,width,height,ITextComponent.nullToEmpty(""),0xFFFFFFFF,bgColor);
 
     }
     public ModWidget(int x, int y, int width, int height, int bgColor, IPressable pressedAction)
     {
-        this(x,y,width,height,Component.nullToEmpty(""),0xFFFFFFFF,bgColor);
+        this(x,y,width,height,ITextComponent.nullToEmpty(""),0xFFFFFFFF,bgColor);
         this.pressedAction=pressedAction;
     }
 
@@ -70,7 +69,7 @@ public class ModWidget extends AbstractWidget {
         return this;
     }
 
-    public ModWidget setToolTip(Component textComponent)
+    public ModWidget setToolTip(ITextComponent textComponent)
     {
         this.toolTipTextComponent = textComponent;
         return this;
@@ -89,10 +88,10 @@ public class ModWidget extends AbstractWidget {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTick) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTick) {
         if (visible) {
             int drawX,drawY;
-            Font fr = Minecraft.getInstance().font;
+            FontRenderer fr = Minecraft.getInstance().font;
 
 
             switch (halignment) {
@@ -142,9 +141,9 @@ public class ModWidget extends AbstractWidget {
     }
 
 
-    public void renderHoverToolTip(PoseStack matrixStack, int mouseX, int mouseY) {
+    public void renderHoverToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (this.toolTipTextComponent != null) {
-            Font fr = Minecraft.getInstance().font;
+            FontRenderer fr = Minecraft.getInstance().font;
             int width = fr.width(this.toolTipTextComponent);
             int height = fr.lineHeight;
 
@@ -152,11 +151,6 @@ public class ModWidget extends AbstractWidget {
             fill(matrixStack, mouseX + 1, mouseY + 11, mouseX + width + 3, mouseY + 10 + height + 3, 0x66EEEEEE);
             fr.draw(matrixStack, this.toolTipTextComponent.getVisualOrderText(), (float) (mouseX + 3.0), (float) (mouseY + 13.0), 0xFFFEFEFE);
         }
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput p_169152_) {
-
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -2,21 +2,20 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
 import com.dannyandson.rangedwirelessredstone.setup.Registration;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 public class TransmitterBlockEntity extends AbstractWirelessEntity {
 
-    public TransmitterBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(Registration.TRANSMITTER_BLOCK_ENTITY.get(), blockPos, blockState);
+    public TransmitterBlockEntity() {
+        super(Registration.TRANSMITTER_BLOCK_ENTITY.get());
     }
 
     @Override
     public void setSignal(int signal) {
         if (signal != this.signal) {
-            if (this.level instanceof ServerLevel serverLevel)
-                ChannelData.getChannelData(serverLevel).setTransmitterSignal(getBlockPos(), signal);
+            if (this.level instanceof ServerWorld)
+                ChannelData.getChannelData((ServerWorld) this.level).setTransmitterSignal(getBlockPos(), signal);
             this.signal = signal;
             sync();
         }
@@ -25,8 +24,8 @@ public class TransmitterBlockEntity extends AbstractWirelessEntity {
     @Override
     public void setChannel(int channel) {
         if (channel != this.channel) {
-            if (this.level instanceof ServerLevel serverLevel)
-                ChannelData.getChannelData(serverLevel).setTransmitterChannel(getBlockPos(), channel);
+            if (this.level instanceof ServerWorld)
+                ChannelData.getChannelData((ServerWorld) this.level).setTransmitterChannel(getBlockPos(), channel);
             this.channel = channel;
             sync();
         }

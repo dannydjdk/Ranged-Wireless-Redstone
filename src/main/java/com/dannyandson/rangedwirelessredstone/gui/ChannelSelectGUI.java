@@ -4,14 +4,14 @@ import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
 import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
 import com.dannyandson.rangedwirelessredstone.network.SetChannel;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class ChannelSelectGUI extends Screen {
 
@@ -24,7 +24,7 @@ public class ChannelSelectGUI extends Screen {
     private final ResourceLocation GUI = new ResourceLocation(RangedWirelessRedstone.MODID, "textures/gui/transparent.png");
 
     protected ChannelSelectGUI(IWirelessComponent component) {
-        super(new TranslatableComponent("rangedwirelessredstone:channelSelectGUI"));
+        super(new TranslationTextComponent("rangedwirelessredstone:channelSelectGUI"));
         this.component = component;
     }
 
@@ -35,21 +35,21 @@ public class ChannelSelectGUI extends Screen {
         Integer channel = component.getChannel();
 
 
-        this.channelWidget = new ModWidget(relX,relY+21,WIDTH,20, Component.nullToEmpty(channel.toString()))
+        this.channelWidget = new ModWidget(relX,relY+21,WIDTH,20, ITextComponent.nullToEmpty(channel.toString()))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER).setTextVAlignment(ModWidget.VAlignment.MIDDLE);
 
-        addRenderableWidget(new ModWidget(relX-1, relY-1, WIDTH+2, HEIGHT+2, 0xAA000000));
-        addRenderableWidget(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
-        addRenderableWidget(new Button(relX + 35, relY + 48, 80, 20, new TranslatableComponent("rangedwirelessredstone.gui.close"), button -> close()));
-        addRenderableWidget(this.channelWidget);
+        addButton(new ModWidget(relX-1, relY-1, WIDTH+2, HEIGHT+2, 0xAA000000));
+        addButton(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
+        addButton(new Button(relX + 35, relY + 48, 80, 20, new TranslationTextComponent("rangedwirelessredstone.gui.close"), button -> close()));
+        addButton(this.channelWidget);
 
-        addRenderableWidget(new ModWidget(relX,relY+3,WIDTH-2,20,new TranslatableComponent("rangedwirelessredstone.gui.channel")))
+        addButton(new ModWidget(relX,relY+3,WIDTH-2,20,new TranslationTextComponent("rangedwirelessredstone.gui.channel")))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER);
-        addRenderableWidget(new Button(relX + 10, relY + 15, 20, 20, Component.nullToEmpty("--"), button -> changeChannel(-10)));
-        addRenderableWidget(new Button(relX + 35, relY + 15, 20, 20, Component.nullToEmpty("-"), button -> changeChannel(-1)));
+        addButton(new Button(relX + 10, relY + 15, 20, 20, ITextComponent.nullToEmpty("--"), button -> changeChannel(-10)));
+        addButton(new Button(relX + 35, relY + 15, 20, 20, ITextComponent.nullToEmpty("-"), button -> changeChannel(-1)));
 
-        addRenderableWidget(new Button(relX + 95, relY + 15, 20, 20, Component.nullToEmpty("+"), button -> changeChannel(1)));
-        addRenderableWidget(new Button(relX + 125, relY + 15, 20, 20, Component.nullToEmpty("++"), button -> changeChannel(10)));
+        addButton(new Button(relX + 95, relY + 15, 20, 20, ITextComponent.nullToEmpty("+"), button -> changeChannel(1)));
+        addButton(new Button(relX + 125, relY + 15, 20, 20, ITextComponent.nullToEmpty("++"), button -> changeChannel(10)));
     }
 
     private void close() {
@@ -65,10 +65,10 @@ public class ChannelSelectGUI extends Screen {
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
 
-        this.removeWidget(this.channelWidget);
-        this.channelWidget = new ModWidget(relX,relY+21,WIDTH,20, Component.nullToEmpty(channel + ""))
+        this.buttons.remove(this.channelWidget);
+        this.channelWidget = new ModWidget(relX,relY+21,WIDTH,20, ITextComponent.nullToEmpty(channel + ""))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER).setTextVAlignment(ModWidget.VAlignment.MIDDLE);
-        addRenderableWidget(this.channelWidget);
+        addButton(this.channelWidget);
     }
 
     @Override
@@ -77,10 +77,9 @@ public class ChannelSelectGUI extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, GUI);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        this.minecraft.getTextureManager().bindForSetup(GUI);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bind(GUI);
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
         this.blit(matrixStack, relX, relY, 0, 0, WIDTH, HEIGHT);

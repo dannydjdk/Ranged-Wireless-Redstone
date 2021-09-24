@@ -2,15 +2,16 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
 import com.dannyandson.rangedwirelessredstone.setup.Registration;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
-public class ReceiverBlockEntity extends AbstractWirelessEntity {
+public class ReceiverBlockEntity extends AbstractWirelessEntity implements ITickableTileEntity {
 
-    public ReceiverBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(Registration.RECEIVER_BLOCK_ENTITY.get(), blockPos, blockState);
+    public ReceiverBlockEntity() {
+        super(Registration.RECEIVER_BLOCK_ENTITY.get());
     }
 
     @Override
@@ -22,7 +23,7 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
             for(Direction dir : Direction.values()) {
                 BlockPos neighborPos = worldPosition.relative(dir);
                 BlockState neighborBlockState = level.getBlockState(neighborPos);
-                if (!neighborBlockState.isAir())
+                if (!neighborBlockState.isAir(level,neighborPos))
                     this.level.updateNeighborsAtExceptFromFacing(neighborPos,neighborBlockState.getBlock(),dir.getOpposite());
             }
         }
@@ -36,9 +37,10 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
         }
     }
 
+    @Override
     public void tick() {
-        if (level instanceof ServerLevel serverLevel){
-            setSignal(ChannelData.getChannelData(serverLevel).getChannelSignal(channel,getBlockPos()));
+        if (level instanceof ServerWorld){
+            setSignal(ChannelData.getChannelData((ServerWorld)level).getChannelSignal(channel,getBlockPos()));
         }
     }
 

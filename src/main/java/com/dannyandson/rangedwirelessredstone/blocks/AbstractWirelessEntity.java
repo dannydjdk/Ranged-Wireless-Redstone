@@ -1,24 +1,23 @@
 package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractWirelessEntity  extends BlockEntity implements IWirelessComponent {
+public abstract class AbstractWirelessEntity  extends TileEntity implements IWirelessComponent {
 
     protected int signal = 0;
     protected int channel = 0;
 
-    public AbstractWirelessEntity(BlockEntityType<?extends AbstractWirelessEntity> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+    public AbstractWirelessEntity(TileEntityType<?extends AbstractWirelessEntity> type) {
+        super(type);
     }
 
     @Override
@@ -45,31 +44,34 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
 
     @Nullable
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(),-1,this.getUpdateTag());
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getBlockPos(),-1,this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        CompoundNBT nbt = pkt.getTag();
+        this.signal = nbt.getInt("signal");
+        this.channel = nbt.getInt("channel");
     }
 
+
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag nbt = new CompoundTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT nbt = new CompoundNBT();
         this.save(nbt);
         return nbt;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(BlockState blockState, CompoundNBT nbt) {
+        super.load(blockState, nbt);
         this.signal = nbt.getInt("signal");
         this.channel = nbt.getInt("channel");
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         nbt.putInt("signal",this.signal);
         nbt.putInt("channel",this.channel);
         return super.save(nbt);

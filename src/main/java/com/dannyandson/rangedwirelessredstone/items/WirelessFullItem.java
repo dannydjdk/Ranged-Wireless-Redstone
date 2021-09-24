@@ -1,31 +1,31 @@
 package com.dannyandson.rangedwirelessredstone.items;
 
 import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class WirelessFullItem extends BlockItem {
     public WirelessFullItem(Block block) {
-        super(block,new Item.Properties().tab(ModSetup.ITEM_GROUP));
+        super(block, new Item.Properties().tab(ModSetup.ITEM_GROUP));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flags) {
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
         if (Screen.hasShiftDown()) {
-            list.add(new TranslatableComponent("message." + this.getDescriptionId()).withStyle(ChatFormatting.DARK_AQUA));
+            list.add(new TranslationTextComponent("message." + this.getDescriptionId()).withStyle(TextFormatting.DARK_AQUA));
         } else
-            list.add(new TranslatableComponent("rangedwirelessredstone.tooltip.press_shift").withStyle(ChatFormatting.DARK_GRAY));
+            list.add(new TranslationTextComponent("rangedwirelessredstone.tooltip.press_shift").withStyle(TextFormatting.DARK_GRAY));
     }
 
 }

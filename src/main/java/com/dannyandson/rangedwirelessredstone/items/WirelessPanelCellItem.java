@@ -3,16 +3,16 @@ package com.dannyandson.rangedwirelessredstone.items;
 import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import com.dannyandson.tinyredstone.api.AbstractPanelCellItem;
 import com.dannyandson.tinyredstone.blocks.PanelBlock;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,16 +24,16 @@ public class WirelessPanelCellItem extends AbstractPanelCellItem {
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
         return player.level.getBlockState(pos).getBlock() instanceof PanelBlock;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flags) {
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flags) {
         if (Screen.hasShiftDown()) {
-            list.add(new TranslatableComponent("message.item.redstone_panel_cell").withStyle(ChatFormatting.GRAY));
-            list.add(new TranslatableComponent("message." + this.getDescriptionId()).withStyle(ChatFormatting.DARK_AQUA));
+            list.add(new TranslationTextComponent("message.item.redstone_panel_cell").withStyle(TextFormatting.GRAY));
+            list.add(new TranslationTextComponent("message." + this.getDescriptionId()).withStyle(TextFormatting.DARK_AQUA));
         } else
-            list.add(new TranslatableComponent("tinyredstone.tooltip.press_shift").withStyle(ChatFormatting.DARK_GRAY));
+            list.add(new TranslationTextComponent("tinyredstone.tooltip.press_shift").withStyle(TextFormatting.DARK_GRAY));
     }
 }

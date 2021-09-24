@@ -6,9 +6,9 @@ import com.dannyandson.tinyredstone.api.IOverlayBlockInfo;
 import com.dannyandson.tinyredstone.api.IPanelCell;
 import com.dannyandson.tinyredstone.api.IPanelCellInfoProvider;
 import com.dannyandson.tinyredstone.blocks.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class AbstractWirelessCell implements IWirelessComponent, IPanelCell, IPanelCellInfoProvider {
 
@@ -22,25 +22,15 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     }
 
     @Override
-    public boolean canAttachToBaseOnSide(Side side) {
-        return side==Side.BOTTOM;
-    }
-
-    @Override
-    public Side getBaseSide() {
-        return Side.BOTTOM;
-    }
-
-    @Override
-    public CompoundTag writeNBT() {
-        CompoundTag compoundTag = new CompoundTag();
+    public CompoundNBT writeNBT() {
+        CompoundNBT compoundTag = new CompoundNBT();
         compoundTag.putInt("signal",signal);
         compoundTag.putInt("channel",channel);
         return compoundTag;
     }
 
     @Override
-    public void readNBT(CompoundTag compoundTag) {
+    public void readNBT(CompoundNBT compoundTag) {
         signal=compoundTag.getInt("signal");
         channel=compoundTag.getInt("channel");
     }
@@ -78,7 +68,7 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     }
 
     @Override
-    public boolean onBlockActivated(PanelCellPos cellPos, PanelCellSegment segmentClicked, Player player) {
+    public boolean onBlockActivated(PanelCellPos cellPos, PanelCellSegment segmentClicked, PlayerEntity player) {
         this.panelCellPos = cellPos;
         if (cellPos.getPanelTile().getLevel().isClientSide())
             ChannelSelectGUI.open(this);

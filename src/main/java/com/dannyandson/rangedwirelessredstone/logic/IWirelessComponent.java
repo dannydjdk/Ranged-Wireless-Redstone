@@ -1,6 +1,6 @@
 package com.dannyandson.rangedwirelessredstone.logic;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public interface IWirelessComponent {
 

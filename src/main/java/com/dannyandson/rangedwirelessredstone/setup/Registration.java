@@ -6,29 +6,28 @@ import com.dannyandson.rangedwirelessredstone.blocks.ReceiverBlockEntity;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlock;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockEntity;
 import com.dannyandson.rangedwirelessredstone.items.WirelessFullItem;
-import com.dannyandson.rangedwirelessredstone.items.WirelessPanelCellItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Registration {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RangedWirelessRedstone.MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RangedWirelessRedstone.MODID);
-    private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, RangedWirelessRedstone.MODID);
+    private static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, RangedWirelessRedstone.MODID);
 
     //BLOCKS
     public static final RegistryObject<TransmitterBlock> TRANSMITTER_BLOCK = BLOCKS.register("redstone_transmitter", TransmitterBlock::new);
     public static final RegistryObject<ReceiverBlock> RECEIVER_BLOCK = BLOCKS.register("redstone_receiver", ReceiverBlock::new);
 
     //BLOCK ENTITIES
-    public static final RegistryObject<BlockEntityType<TransmitterBlockEntity>> TRANSMITTER_BLOCK_ENTITY =
-            TILES.register("redstone_transmitter", () -> BlockEntityType.Builder.of(TransmitterBlockEntity::new, TRANSMITTER_BLOCK.get()).build(null));
-        public static final RegistryObject<BlockEntityType<ReceiverBlockEntity>> RECEIVER_BLOCK_ENTITY =
-            TILES.register("redstone_receiver", () -> BlockEntityType.Builder.of(ReceiverBlockEntity::new, RECEIVER_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<TransmitterBlockEntity>> TRANSMITTER_BLOCK_ENTITY =
+            TILES.register("redstone_transmitter", () -> TileEntityType.Builder.of(TransmitterBlockEntity::new, TRANSMITTER_BLOCK.get()).build(null));
+        public static final RegistryObject<TileEntityType<ReceiverBlockEntity>> RECEIVER_BLOCK_ENTITY =
+            TILES.register("redstone_receiver", () -> TileEntityType.Builder.of(ReceiverBlockEntity::new, RECEIVER_BLOCK.get()).build(null));
 
     //ITEMS
     public static final RegistryObject<Item> TRANSMITTER_ITEM = ITEMS.register("redstone_transmitter",()->new WirelessFullItem(TRANSMITTER_BLOCK.get()));
