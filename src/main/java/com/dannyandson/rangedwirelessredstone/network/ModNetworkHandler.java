@@ -1,7 +1,9 @@
 package com.dannyandson.rangedwirelessredstone.network;
 
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -26,10 +28,26 @@ public class ModNetworkHandler {
                 .decoder(SetChannel::new)
                 .consumer(SetChannel::handle)
                 .add();
+
+        INSTANCE.messageBuilder(ServerNetworkTrigger.class,nextID())
+                .encoder(ServerNetworkTrigger::toBytes)
+                .decoder(ServerNetworkTrigger::new)
+                .consumer(ServerNetworkTrigger::handle)
+                .add();
+
+        INSTANCE.messageBuilder(NetworkViewerTrigger.class,nextID())
+                .encoder(NetworkViewerTrigger::toBytes)
+                .decoder(NetworkViewerTrigger::new)
+                .consumer(NetworkViewerTrigger::handle)
+                .add();
     }
 
     public static void sendToServer(Object packet) {
         INSTANCE.sendToServer(packet);
+    }
+
+    public static void sendToClient(Object packet, ServerPlayerEntity player) {
+        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
 }

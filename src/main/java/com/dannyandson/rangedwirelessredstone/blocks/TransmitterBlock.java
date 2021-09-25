@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -24,8 +25,13 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 
 public class TransmitterBlock extends Block {
-    private static final VoxelShape shape = Block.box(0, 0, 0, 16, 2, 16);
-
+    private final static VoxelShape shape = VoxelShapes.or(
+            VoxelShapes.or(
+                    Block.box(0,0,0,16,2,16),
+                    Block.box(4,2,4,12,4,12)
+            ),
+            Block.box(7,2,7,9,14,9)
+    );
     public TransmitterBlock() {
         super(
                 Properties.of(Material.STONE)
@@ -104,6 +110,7 @@ public class TransmitterBlock extends Block {
         return super.use(blockState, level, pos, player, hand, blockHitResult);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
         return shape;

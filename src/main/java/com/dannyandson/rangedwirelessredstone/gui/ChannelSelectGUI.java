@@ -3,6 +3,7 @@ package com.dannyandson.rangedwirelessredstone.gui;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
 import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
+import com.dannyandson.rangedwirelessredstone.network.ServerNetworkTrigger;
 import com.dannyandson.rangedwirelessredstone.network.SetChannel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -50,10 +51,17 @@ public class ChannelSelectGUI extends Screen {
 
         addButton(new Button(relX + 95, relY + 15, 20, 20, ITextComponent.nullToEmpty("+"), button -> changeChannel(1)));
         addButton(new Button(relX + 125, relY + 15, 20, 20, ITextComponent.nullToEmpty("++"), button -> changeChannel(10)));
+
+        addButton(new Button(relX + 125, relY + 48, 20, 20, ITextComponent.nullToEmpty("☁"), button -> openNetworkViewer()));
     }
 
     private void close() {
         minecraft.setScreen(null);
+    }
+
+    private void openNetworkViewer(){
+        ModNetworkHandler.sendToServer(new ServerNetworkTrigger(ServerNetworkTrigger.ServerTrigger.NETWORK_VIEWER));
+        close();
     }
 
     private void changeChannel(int change)

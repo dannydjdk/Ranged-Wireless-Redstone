@@ -2,11 +2,20 @@ package com.dannyandson.rangedwirelessredstone.logic;
 
 import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
+import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockEntity;
+import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TransmitterCell;
+import com.dannyandson.tinyredstone.api.IPanelCell;
+import com.dannyandson.tinyredstone.blocks.PanelCellPos;
+import com.dannyandson.tinyredstone.blocks.PanelTile;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.fml.ModList;
 
+import javax.annotation.CheckForNull;
 import java.util.*;
 
 public class ChannelData {
@@ -112,7 +121,7 @@ public class ChannelData {
         removeTransmitter(getStringFromPos(pos) + ", " + cellIndex);
     }
     private void removeTransmitter(String pos) {
-        Integer channel = saveData.posChannelMap.remove(pos);
+        Integer channel = saveData.getTransmitterChannel(pos);
         if (channel != null)
             saveData.channelPosMap.get(channel).remove(pos);
         saveData.signalMap.remove(pos);
@@ -126,7 +135,35 @@ public class ChannelData {
      * This should not be necessary under normal circumstances,
      * but world crashes could leave orphaned transmitter data.
      */
-    public void cleanupTransmitters() {
+    public void cleanupTransmitters(IBlockReader blockGetter) {
+
+        for (Map.Entry<Integer, List<String>> entry : saveData.channelPosMap.entrySet()) {
+            for (String posString : entry.getValue()) {
+                int[] coords = getXYZiFromPosString(posString);
+                BlockPos pos = new BlockPos(coords[0], coords[1], coords[2]);
+                TileEntity blockEntity = blockGetter.getBlockEntity(pos);
+                if (ModList.get().isLoaded("tinyredstone") && coords.length == 4 && blockEntity instanceof PanelTile) {
+                    PanelCellPos panelCellPos = PanelCellPos.fromIndex(((PanelTile) blockEntity), coords[3]);
+                    IPanelCell panelCell = panelCellPos.getIPanelCell();
+                    if (panelCell instanceof TransmitterCell) {
+                        ((TransmitterCell) panelCell).setChannel(entry.getKey());
+                    } else {
+                        removeTransmitter(posString);
+                    }
+
+                } else if (blockEntity instanceof TransmitterBlockEntity) {
+                    ((TransmitterBlockEntity) blockEntity).setChannel(entry.getKey());
+                } else {
+                    removeTransmitter(posString);
+                }
+            }
+        }
+        saveData.setDirty();
+    }
+
+    public CompoundNBT getChannelNBT(){
+        CompoundNBT nbt =  saveData.save(new CompoundNBT());
+        return nbt.getCompound("channeldata");
     }
 
     private static int[] getXYZiFromPosString(String pos){
@@ -142,7 +179,6 @@ public class ChannelData {
     }
 
     private static class ChannelSaveData extends WorldSavedData {
-        public Map<String, Integer> posChannelMap = new HashMap<>();
         public Map<Integer, List<String>> channelPosMap = new HashMap<>();
         public Map<String, Integer> signalMap = new HashMap<>();
 
@@ -156,19 +192,24 @@ public class ChannelData {
             CompoundNBT channelData = nbt.getCompound("channeldata");
             CompoundNBT signalData = nbt.getCompound("signaldata");
             for (String key : channelData.getAllKeys()) {
-                this.setTransmitterChannel(key, channelData.getInt(key));
+                int channel = channelData.getInt(key);
+                if (!channelPosMap.containsKey(channel))
+                    channelPosMap.put(channel, new ArrayList<>());
+                channelPosMap.get(channel).add(key);
                 this.signalMap.put(key, signalData.getInt(key));
-
-            }        }
+            }
+        }
 
         @Override
         public CompoundNBT save(CompoundNBT nbt) {
             CompoundNBT channelData = new CompoundNBT(),
                     signalData = new CompoundNBT();
 
-            for (Map.Entry<String, Integer> entry : posChannelMap.entrySet()) {
-                channelData.putInt(entry.getKey(), entry.getValue());
+            for(Map.Entry<Integer, List<String>> entry : channelPosMap.entrySet()) {
+                for (String pos : entry.getValue())
+                    channelData.putInt(pos,entry.getKey());
             }
+
             for (Map.Entry<String, Integer> entry : signalMap.entrySet()) {
                 signalData.putInt(entry.getKey(), entry.getValue());
             }
@@ -179,16 +220,22 @@ public class ChannelData {
         }
 
         public void setTransmitterChannel(String  pos, int channel) {
-            if (posChannelMap.containsKey(pos)) {
-                Integer oldChannel = posChannelMap.remove(pos);
-                if (oldChannel != null && channelPosMap.get(oldChannel).contains(pos))
-                    channelPosMap.get(oldChannel).remove(pos);
-            }
+            Integer oldChannel = getTransmitterChannel(pos);
+            if (oldChannel != null)
+                channelPosMap.get(oldChannel).remove(pos);
+
             if (!channelPosMap.containsKey(channel))
                 channelPosMap.put(channel, new ArrayList<>());
-
             channelPosMap.get(channel).add(pos);
-            posChannelMap.put(pos, channel);
+        }
+
+        @CheckForNull
+        public Integer getTransmitterChannel(String pos){
+            for(Map.Entry<Integer, List<String>> entry : channelPosMap.entrySet()){
+                if (entry.getValue().contains(pos))
+                    return entry.getKey();
+            }
+            return null;
         }
 
     }

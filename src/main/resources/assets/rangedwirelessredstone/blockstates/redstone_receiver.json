@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "rangedwirelessredstone:block/redstone_receiver"
-    }
+    "facing=up": {"model": "rangedwirelessredstone:block/redstone_receiver"},
+    "facing=north": {"model": "rangedwirelessredstone:block/redstone_receiver", "y": 0},
+    "facing=east": {"model": "rangedwirelessredstone:block/redstone_receiver", "y": 90},
+    "facing=south": {"model": "rangedwirelessredstone:block/redstone_receiver","y": 180},
+    "facing=west": {"model": "rangedwirelessredstone:block/redstone_receiver", "y": 270},
+    "facing=down": {"model": "rangedwirelessredstone:block/redstone_receiver"}
   }
 }
