@@ -3,6 +3,7 @@ package com.dannyandson.rangedwirelessredstone.gui;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
 import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
+import com.dannyandson.rangedwirelessredstone.network.ServerNetworkTrigger;
 import com.dannyandson.rangedwirelessredstone.network.SetChannel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -50,6 +51,8 @@ public class ChannelSelectGUI extends Screen {
 
         addRenderableWidget(new Button(relX + 95, relY + 15, 20, 20, Component.nullToEmpty("+"), button -> changeChannel(1)));
         addRenderableWidget(new Button(relX + 125, relY + 15, 20, 20, Component.nullToEmpty("++"), button -> changeChannel(10)));
+
+        addRenderableWidget(new Button(relX + 125, relY + 48, 20, 20, Component.nullToEmpty("☁"), button -> openNetworkViewer()));
     }
 
     private void close() {
@@ -69,6 +72,11 @@ public class ChannelSelectGUI extends Screen {
         this.channelWidget = new ModWidget(relX,relY+21,WIDTH,20, Component.nullToEmpty(channel + ""))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER).setTextVAlignment(ModWidget.VAlignment.MIDDLE);
         addRenderableWidget(this.channelWidget);
+    }
+
+    private void openNetworkViewer(){
+        ModNetworkHandler.sendToServer(new ServerNetworkTrigger(ServerNetworkTrigger.ServerTrigger.NETWORK_VIEWER));
+        close();
     }
 
     @Override
