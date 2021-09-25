@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -21,12 +20,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolAction;
 
 import javax.annotation.Nullable;
 
 public class TransmitterBlock extends BaseEntityBlock {
+
+    private final static VoxelShape shape = Shapes.or(
+            Shapes.or(
+                    Block.box(0,0,0,16,2,16),
+                    Block.box(4,2,4,12,4,12)
+            ),
+                    Block.box(7,2,7,9,14,9)
+    );
 
     public TransmitterBlock() {
         super(
@@ -107,6 +114,6 @@ public class TransmitterBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return Block.box(0,0,0,16,2,16);
+        return shape;
     }
 }

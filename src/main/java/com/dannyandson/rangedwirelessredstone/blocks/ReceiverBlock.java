@@ -24,11 +24,32 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReceiverBlock extends BaseEntityBlock {
+
+    private final static VoxelShape shape = Shapes.or(
+            Shapes.or(
+                Block.box(0,0,0,16,2,16),
+                Block.box(3,2,4,4,12,5)
+            ),
+            Shapes.or(
+                    Block.box(12,4,4,13,14,5),
+                    Block.box(3,4,4,4,14,5)
+            )
+    );
+    private final static Map<Direction,VoxelShape> shapeMap = new HashMap<>();
+    static {
+        shapeMap.put(Direction.NORTH,shape);
+        shapeMap.put(Direction.EAST,rotateShape(Direction.EAST));
+        shapeMap.put(Direction.SOUTH,rotateShape(Direction.SOUTH));
+        shapeMap.put(Direction.WEST,rotateShape(Direction.WEST));
+    }
 
     public ReceiverBlock() {
         super(
@@ -111,7 +132,23 @@ public class ReceiverBlock extends BaseEntityBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return Block.box(0,0,0,16,2,16);
+    public VoxelShape getShape(BlockState blockState, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+        VoxelShape thisShape = shapeMap.get(blockState.getValue(BlockStateProperties.FACING));
+        if (thisShape!=null)
+            return thisShape;
+        return shape;
+    }
+
+    private static VoxelShape rotateShape(Direction direction) {
+        VoxelShape[] buffer = new VoxelShape[]{ shape, Shapes.empty() };
+
+        int times = (direction.get2DDataValue() - Direction.NORTH.get2DDataValue() + 4) % 4;
+        for (int i = 0; i < times; i++) {
+            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> buffer[1] = Shapes.or(buffer[1], Shapes.create(1-maxZ, minY, minX, 1-minZ, maxY, maxX)));
+            buffer[0] = buffer[1];
+            buffer[1] = Shapes.empty();
+        }
+
+        return buffer[0];
     }
 }
