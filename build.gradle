@@ -155,6 +155,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:theoneprobe-245211:${theOneProbeFileID}")
     implementation fg.deobf("curse.maven:jei-238222:${jeiFileID}")
+    implementation fg.deobf('curse.maven:jade-324717:3447700')
 
 }
 
