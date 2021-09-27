@@ -4,6 +4,7 @@ import com.dannyandson.rangedwirelessredstone.setup.ClientSetup;
 import com.dannyandson.rangedwirelessredstone.setup.Registration;
 import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import com.dannyandson.rangedwirelessredstone.setup.TinyRedstoneRegistration;
+import com.dannyandson.rangedwirelessredstone.compat.CompatHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -40,6 +41,8 @@ public class RangedWirelessRedstone
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        CompatHandler.register();
     }
 
 

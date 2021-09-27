@@ -2,9 +2,8 @@ package com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells;
 
 import com.dannyandson.rangedwirelessredstone.RenderHelper;
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
-import com.dannyandson.tinyredstone.blocks.PanelCellNeighbor;
-import com.dannyandson.tinyredstone.blocks.PanelCellPos;
-import com.dannyandson.tinyredstone.blocks.Side;
+import com.dannyandson.tinyredstone.api.IOverlayBlockInfo;
+import com.dannyandson.tinyredstone.blocks.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -137,4 +136,11 @@ public class TransmitterCell extends AbstractWirelessCell {
         if (world instanceof ServerWorld)
             ChannelData.getChannelData((ServerWorld) world).removeTransmitter(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex());
     }
+
+    @Override
+    public void addInfo(IOverlayBlockInfo overlayBlockInfo, PanelTile panelTile, PosInPanelCell posInPanelCell) {
+        overlayBlockInfo.addText("Signal", this.getSignal() + "");
+        super.addInfo(overlayBlockInfo, panelTile, posInPanelCell);
+    }
+
 }
