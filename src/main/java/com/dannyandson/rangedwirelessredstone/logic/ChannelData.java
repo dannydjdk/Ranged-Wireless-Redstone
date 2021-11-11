@@ -59,26 +59,49 @@ public class ChannelData {
     }
 
     /**
-     * Set the redstone value to be transmitted by a transmitter
+     * Set the weak (indirect) redstone value to be transmitted by a transmitter
      *
      * @param pos    Block position of the transmitter
      * @param signal The signal strength to be transmitted
      */
-    public void setTransmitterSignal(BlockPos pos, int signal) {
-        setTransmitterSignal(pos.toShortString(),signal);
+    public void setTransmitterWeakSignal(BlockPos pos, int signal) {
+        setTransmitterWeakSignal(pos.toShortString(),signal);
     }
     /**
-     * Set the redstone value to be transmitted by a transmitter
+     * Set the weak (indirect) redstone value to be transmitted by a transmitter
      *
      * @param pos    "ShortString" representing the position of the transmitter
      * @param cellIndex Cell index of tiny redstone component
      * @param signal The signal strength to be transmitted
      */
-    public void setTransmitterSignal(BlockPos pos, int cellIndex, int signal) {
-        setTransmitterSignal(pos.toShortString() + ", " + cellIndex,signal);
+    public void setTransmitterWeakSignal(BlockPos pos, int cellIndex, int signal) {
+        setTransmitterWeakSignal(pos.toShortString() + ", " + cellIndex,signal);
     }
-    private void setTransmitterSignal(String pos, int signal) {
-        saveData.signalMap.put(pos, signal);
+    private void setTransmitterWeakSignal(String pos, int signal) {
+        saveData.weakSignalMap.put(pos, signal);
+        saveData.setDirty();
+    }
+    /**
+     * Set the strong (direct) redstone value to be transmitted by a transmitter
+     *
+     * @param pos    Block position of the transmitter
+     * @param signal The signal strength to be transmitted
+     */
+    public void setTransmitterStrongSignal(BlockPos pos, int signal) {
+        setTransmitterStrongSignal(pos.toShortString(),signal);
+    }
+    /**
+     * Set the strong (direct) redstone value to be transmitted by a transmitter
+     *
+     * @param pos    "ShortString" representing the position of the transmitter
+     * @param cellIndex Cell index of tiny redstone component
+     * @param signal The signal strength to be transmitted
+     */
+    public void setTransmitterStrongSignal(BlockPos pos, int cellIndex, int signal) {
+        setTransmitterStrongSignal(pos.toShortString() + ", " + cellIndex,signal);
+    }
+    private void setTransmitterStrongSignal(String pos, int signal) {
+        saveData.strongSignalMap.put(pos, signal);
         saveData.setDirty();
     }
 
@@ -89,10 +112,12 @@ public class ChannelData {
      *
      * @param channel The channel of the receiver
      * @param pos     The position of the receiver
-     * @return An integer representing the signal strength a receiver should output
+     * @return An integer map with the "strong" and "weak" signal strengths a receiver should output
      */
-    public Integer getChannelSignal(int channel, BlockPos pos) {
-        int signal = 0;
+    public Map<String,Integer> getChannelSignal(int channel, BlockPos pos) {
+        Map<String,Integer> signals = new HashMap();
+        signals.put("strong",0);
+        signals.put("weak",0);
         if (saveData.channelPosMap.containsKey(channel)) {
             for (String tPos : saveData.channelPosMap.get(channel)) {
                 int[] tPosValues = getXYZiFromPosString(tPos);
@@ -104,13 +129,16 @@ public class ChannelData {
                                 Math.abs(y - pos.getY()) <= range &&
                                 Math.abs(z - pos.getZ()) <= range
                 ) {
-                    Integer tSignal = saveData.signalMap.get(tPos);
-                    if (tSignal != null && tSignal > signal)
-                        signal = tSignal;
+                    Integer sSignal = saveData.strongSignalMap.get(tPos);
+                    Integer wSignal = saveData.weakSignalMap.get(tPos);
+                    if (sSignal != null && sSignal > signals.get("strong"))
+                        signals.put("strong",sSignal);
+                    if (wSignal != null && wSignal > signals.get("weak"))
+                        signals.put("weak",wSignal);
                 }
             }
         }
-        return signal;
+        return signals;
     }
 
     public void removeTransmitter(BlockPos pos){
@@ -123,7 +151,7 @@ public class ChannelData {
         Integer channel = saveData.getTransmitterChannel(pos);
         if (channel != null)
             saveData.channelPosMap.get(channel).remove(pos);
-        saveData.signalMap.remove(pos);
+        saveData.strongSignalMap.remove(pos);
         saveData.setDirty();
     }
 
@@ -164,7 +192,7 @@ public class ChannelData {
         return nbt.getCompound("channeldata");
     }
 
-    private static int[] getXYZiFromPosString(String pos){
+    public static int[] getXYZiFromPosString(String pos){
         String[] posArray = pos.split(",\s+");
         int[] posArrayInt = new int[posArray.length];
         for (int i =0 ; i<posArray.length ; i++)
@@ -174,7 +202,8 @@ public class ChannelData {
 
     private static class ChannelSaveData extends SavedData {
         public Map<Integer, List<String>> channelPosMap = new HashMap<>();
-        public Map<String, Integer> signalMap = new HashMap<>();
+        public Map<String, Integer> weakSignalMap = new HashMap<>();
+        public Map<String, Integer> strongSignalMap = new HashMap<>();
 
 
         public ChannelSaveData() {
@@ -183,31 +212,39 @@ public class ChannelData {
         public ChannelSaveData(CompoundTag nbt) {
             CompoundTag channelData = nbt.getCompound("channeldata");
             CompoundTag signalData = nbt.getCompound("signaldata");
+            CompoundTag weakSignalData = nbt.getCompound("weaksignaldata");
             for (String key : channelData.getAllKeys()) {
                 int channel = channelData.getInt(key);
                 if (!channelPosMap.containsKey(channel))
                     channelPosMap.put(channel, new ArrayList<>());
                 channelPosMap.get(channel).add(key);
-                this.signalMap.put(key, signalData.getInt(key));
+                this.strongSignalMap.put(key, signalData.getInt(key));
+                this.weakSignalMap.put(key,weakSignalData.getInt(key));
             }
         }
 
         @Override
         public CompoundTag save(CompoundTag nbt) {
             CompoundTag channelData = new CompoundTag(),
-                    signalData = new CompoundTag();
+                    strongSignalData = new CompoundTag(),
+                    weakSignalData = new CompoundTag();
 
             for(Map.Entry<Integer, List<String>> entry : channelPosMap.entrySet()) {
                 for (String pos : entry.getValue())
                     channelData.putInt(pos,entry.getKey());
             }
 
-            for (Map.Entry<String, Integer> entry : signalMap.entrySet()) {
-                signalData.putInt(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Integer> entry : strongSignalMap.entrySet()) {
+                strongSignalData.putInt(entry.getKey(), entry.getValue());
+            }
+
+            for (Map.Entry<String, Integer> entry : weakSignalMap.entrySet()) {
+                weakSignalData.putInt(entry.getKey(), entry.getValue());
             }
 
             nbt.put("channeldata", channelData);
-            nbt.put("signaldata", signalData);
+            nbt.put("signaldata", strongSignalData);
+            nbt.put("weaksignaldata", weakSignalData);
             return nbt;
         }
 

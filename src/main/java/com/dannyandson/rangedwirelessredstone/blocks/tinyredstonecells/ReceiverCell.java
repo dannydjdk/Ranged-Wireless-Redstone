@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.server.level.ServerLevel;
 
+import java.util.Map;
+
 public class ReceiverCell extends AbstractWirelessCell{
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
@@ -89,21 +91,21 @@ public class ReceiverCell extends AbstractWirelessCell{
 
     @Override
     public int getWeakRsOutput(Side side) {
-        return this.getSignal();
+        return this.getWeakSignal();
     }
 
     @Override
     public int getStrongRsOutput(Side side) {
-        return this.getSignal();
+        return this.getStrongSignal();
     }
 
     @Override
     public boolean tick(PanelCellPos cellPos) {
         this.panelCellPos=cellPos;
         if (cellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel){
-            int signal = ChannelData.getChannelData(serverLevel).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
-            if (signal!=getSignal()){
-                setSignal(signal);
+            Map<String,Integer> signals = ChannelData.getChannelData(serverLevel).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
+            if (signals.get("strong")!= getStrongSignal() || signals.get("weak")!= getWeakSignal()){
+                setSignals(signals.get("weak"),signals.get("strong"));
                 return true;
             }
         }

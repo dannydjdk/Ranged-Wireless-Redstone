@@ -63,9 +63,9 @@ public class TransmitterBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity) {
             ChannelData.getChannelData(serverLevel).setTransmitterChannel(pos, 0);
-            ChannelData.getChannelData(serverLevel).setTransmitterSignal(pos,0);
+            ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(pos,0);
             int signal = level.getDirectSignalTo(pos);
-            transmitterEntity.setSignal(signal);
+            transmitterEntity.setSignals(signal,signal);
         }
     }
 
@@ -83,8 +83,8 @@ public class TransmitterBlock extends BaseEntityBlock {
     public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
         if (level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity){
             if (level instanceof ServerLevel serverLevel) {
-                int signal = level.getDirectSignalTo(pos);
-                transmitterEntity.setSignal(signal);
+                int sSignal = level.getDirectSignalTo(pos);
+                transmitterEntity.setSignals(sSignal,sSignal);
             }
         }else{
             super.neighborChanged(blockState,level,pos,block,neighborPos,isMoving);

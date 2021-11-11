@@ -14,7 +14,8 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractWirelessEntity  extends BlockEntity implements IWirelessComponent {
 
-    protected int signal = 0;
+    protected int strongSignal = 0;
+    protected int weakSignal = 0;
     protected int channel = 0;
 
     public AbstractWirelessEntity(BlockEntityType<?extends AbstractWirelessEntity> type, BlockPos pos, BlockState blockState) {
@@ -22,8 +23,13 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     }
 
     @Override
-    public int getSignal() {
-        return signal;
+    public int getStrongSignal() {
+        return strongSignal;
+    }
+
+    @Override
+    public int getWeakSignal() {
+        return weakSignal;
     }
 
     @Override
@@ -64,13 +70,15 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        this.signal = nbt.getInt("signal");
+        this.strongSignal = nbt.getInt("signal");
+        this.weakSignal = nbt.getInt("weaksignal");
         this.channel = nbt.getInt("channel");
     }
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
-        nbt.putInt("signal",this.signal);
+        nbt.putInt("signal",this.strongSignal);
+        nbt.putInt("weaksignal",this.weakSignal);
         nbt.putInt("channel",this.channel);
         return super.save(nbt);
     }

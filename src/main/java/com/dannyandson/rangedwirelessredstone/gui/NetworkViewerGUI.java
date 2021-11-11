@@ -1,6 +1,8 @@
 package com.dannyandson.rangedwirelessredstone.gui;
 
+import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
+import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
 import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
 import com.dannyandson.rangedwirelessredstone.network.ServerNetworkTrigger;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -8,10 +10,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.*;
 
@@ -57,11 +62,29 @@ public class NetworkViewerGUI extends Screen {
                 networkList.put(channel, new ArrayList<>());
             networkList.get(channel).add(key);
         }
+
+        BlockPos queryBlock = null;
+        if (minecraft.hitResult != null && minecraft.hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockhitresult = (BlockHitResult) minecraft.hitResult;
+            queryBlock = blockhitresult.getBlockPos();
+        }
+
         int index = 0;
         for (Integer channel : networkList.keySet().stream().sorted().toList()) {
             for (String posString : networkList.get(channel).stream().sorted().toList()) {
-                channelList.add(index,channel.toString());
-                positionList.add(index,posString);
+
+                int[] tPosValues = ChannelData.getXYZiFromPosString(posString);
+                int x = tPosValues[0], y = tPosValues[1], z = tPosValues[2];
+                boolean isCell = tPosValues.length == 4;
+                int range = isCell ? Config.RANGE_CELL.get() : Config.RANGE_BLOCK.get();
+                boolean inRange = (
+                        queryBlock != null &&
+                        Math.abs(x - queryBlock.getX()) <= range &&
+                        Math.abs(y - queryBlock.getY()) <= range &&
+                        Math.abs(z - queryBlock.getZ()) <= range
+                );
+                channelList.add(index, channel.toString());
+                positionList.add(index, (inRange ? "✔" : "⁃ ") + posString);
                 index++;
             }
         }

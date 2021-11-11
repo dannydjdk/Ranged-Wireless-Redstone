@@ -76,29 +76,36 @@ public class TransmitterCell extends AbstractWirelessCell {
                 leftNeighbor = cellPos.getNeighbor(Side.LEFT),
                 backNeighbor = cellPos.getNeighbor(Side.BACK),
                 frontNeighbor = cellPos.getNeighbor(Side.FRONT),
-                topNeighbor = cellPos.getNeighbor(Side.TOP),
                 bottomNeighbor = cellPos.getNeighbor(Side.BOTTOM);
 
-        int signal = 0;
+        int sSignal = 0;
+        int wSignal = 0;
         if (frontNeighbor != null) {
-            signal = frontNeighbor.getStrongRsOutput();
+            sSignal = frontNeighbor.getStrongRsOutput();
+            wSignal = frontNeighbor.getWeakRsOutput();
         }
         if (rightNeighbor != null) {
-            signal = Math.max(signal, rightNeighbor.getStrongRsOutput());
+            sSignal = Math.max(sSignal, rightNeighbor.getStrongRsOutput());
+            wSignal = Math.max(wSignal, rightNeighbor.getWeakRsOutput());
         }
         if (backNeighbor != null) {
-            signal = Math.max(signal, backNeighbor.getStrongRsOutput());
+            sSignal = Math.max(sSignal, backNeighbor.getStrongRsOutput());
+            wSignal = Math.max(wSignal, backNeighbor.getWeakRsOutput());
         }
         if (leftNeighbor != null) {
-            signal = Math.max(signal, leftNeighbor.getStrongRsOutput());
+            sSignal = Math.max(sSignal, leftNeighbor.getStrongRsOutput());
+            wSignal = Math.max(wSignal, leftNeighbor.getWeakRsOutput());
         }
         if (bottomNeighbor != null) {
-            signal = Math.max(signal, bottomNeighbor.getStrongRsOutput());
+            sSignal = Math.max(sSignal, bottomNeighbor.getStrongRsOutput());
+            wSignal = Math.max(wSignal, bottomNeighbor.getWeakRsOutput());
         }
-        if (signal != this.getSignal()) {
-            if (cellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel)
-                ChannelData.getChannelData(serverLevel).setTransmitterSignal(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), signal);
-            setSignal(signal);
+        if (sSignal != this.getStrongSignal() || wSignal != this.getWeakSignal()) {
+            if (cellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel) {
+                ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), sSignal);
+                ChannelData.getChannelData(serverLevel).setTransmitterWeakSignal(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), wSignal);
+            }
+            setSignals(wSignal,sSignal);
         }
 
         return false;
@@ -133,7 +140,7 @@ public class TransmitterCell extends AbstractWirelessCell {
 
     @Override
     public void addInfo(IOverlayBlockInfo overlayBlockInfo, PanelTile panelTile, PosInPanelCell posInPanelCell) {
-        overlayBlockInfo.addText("Signal", this.getSignal() + "");
+        overlayBlockInfo.addText("Signal", this.getWeakSignal() + "");
         super.addInfo(overlayBlockInfo, panelTile, posInPanelCell);
     }
 

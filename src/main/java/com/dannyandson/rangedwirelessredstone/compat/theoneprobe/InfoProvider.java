@@ -37,7 +37,7 @@ public class InfoProvider implements IBlockDisplayOverride, Function<ITheOneProb
                     .text(CompoundText.createLabelInfo("Channel: ", wirelessEntity.getChannel()));
             if (tileEntity instanceof TransmitterBlockEntity)
                 probeInfo.horizontal()
-                        .text(CompoundText.createLabelInfo("Signal: ", wirelessEntity.getSignal()));
+                        .text(CompoundText.createLabelInfo("Signal: ", wirelessEntity.getWeakSignal()));
         }
     }
 

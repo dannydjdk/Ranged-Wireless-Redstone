@@ -104,7 +104,7 @@ public class ReceiverBlock extends BaseEntityBlock {
     @Override
     public int getDirectSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
         if (blockGetter.getBlockEntity(pos) instanceof IWirelessComponent component) {
-            return component.getSignal();
+            return component.getStrongSignal();
         }
         return super.getDirectSignal(blockState, blockGetter, pos, direction);
     }
@@ -112,7 +112,10 @@ public class ReceiverBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
-        return getDirectSignal(blockState, blockGetter, pos, direction);
+        if (blockGetter.getBlockEntity(pos) instanceof IWirelessComponent component) {
+            return component.getWeakSignal();
+        }
+        return super.getSignal(blockState, blockGetter, pos, direction);
     }
 
     @SuppressWarnings("deprecation")

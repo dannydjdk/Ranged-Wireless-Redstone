@@ -14,7 +14,8 @@ import net.minecraft.world.entity.player.Player;
 
 public abstract class AbstractWirelessCell implements IWirelessComponent, IPanelCell, IPanelCellInfoProvider {
 
-    private int signal = 0;
+    private int strongSignal = 0;
+    private int weakSignal = 0;
     private int channel = 0;
     protected PanelCellPos panelCellPos = null;
 
@@ -36,14 +37,14 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     @Override
     public CompoundTag writeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putInt("signal",signal);
+        compoundTag.putInt("signal", strongSignal);
         compoundTag.putInt("channel",channel);
         return compoundTag;
     }
 
     @Override
     public void readNBT(CompoundTag compoundTag) {
-        signal=compoundTag.getInt("signal");
+        strongSignal =compoundTag.getInt("signal");
         channel=compoundTag.getInt("channel");
     }
 
@@ -58,13 +59,19 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     }
 
     @Override
-    public int getSignal() {
-        return signal;
+    public int getStrongSignal() {
+        return strongSignal;
     }
 
     @Override
-    public void setSignal(int signal) {
-        this.signal = signal;
+    public int getWeakSignal() {
+        return weakSignal;
+    }
+
+    @Override
+    public void setSignals(int weak, int strong) {
+        this.weakSignal = weak;
+        this.strongSignal = strong;
     }
 
     @Override

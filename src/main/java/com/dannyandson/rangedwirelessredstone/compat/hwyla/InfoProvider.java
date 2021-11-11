@@ -41,7 +41,7 @@ public class InfoProvider implements IWailaPlugin, IComponentProvider {
                 elements.add(helper.text(Component.nullToEmpty("Channel:")).tag(RENDER_STRING));
                 elements.add(helper.text(Component.nullToEmpty(" " + wirelessEntity.getChannel())).tag(RENDER_INFO_STRING));
                 elements.add(helper.text(Component.nullToEmpty(" Signal:")).tag(RENDER_STRING));
-                elements.add(helper.text(Component.nullToEmpty(" " + wirelessEntity.getSignal())).tag(RENDER_INFO_STRING));
+                elements.add(helper.text(Component.nullToEmpty(" " + wirelessEntity.getWeakSignal())).tag(RENDER_INFO_STRING));
                 tooltip.add(elements);
 
             }

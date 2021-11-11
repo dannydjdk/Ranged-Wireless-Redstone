@@ -7,6 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Map;
+
 public class ReceiverBlockEntity extends AbstractWirelessEntity {
 
     public ReceiverBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -14,9 +16,10 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
     }
 
     @Override
-    public void setSignal(int signal) {
-        if (signal != this.signal) {
-            this.signal = signal;
+    public void setSignals(int weak,int strong) {
+        if (weak!=this.weakSignal || strong != this.strongSignal) {
+            this.weakSignal = weak;
+            this.strongSignal = strong;
             this.sync();
             this.level.updateNeighborsAt(worldPosition,getBlockState().getBlock());
             for(Direction dir : Direction.values()) {
@@ -38,7 +41,8 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
 
     public void tick() {
         if (level instanceof ServerLevel serverLevel){
-            setSignal(ChannelData.getChannelData(serverLevel).getChannelSignal(channel,getBlockPos()));
+            Map<String,Integer> signals = ChannelData.getChannelData(serverLevel).getChannelSignal(channel,getBlockPos());
+            setSignals(signals.get("weak"),signals.get("strong"));
         }
     }
 

@@ -13,11 +13,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.17.1-1.0.2'
+version = '1.17.1-1.0.4'
 group = 'com.dannyandson.rangedwirelessredstone'
 archivesBaseName = 'rangedwirelessredstone'
 
-def tinyRedstoneVersion = '1.17.1-2.2.9'
+def tinyRedstoneVersion = '1.17.1-2.4.1'
 def theOneProbeFileID = '3430022'
 def jeiFileID = '3448057'
 
@@ -144,7 +144,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.50'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.108'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
