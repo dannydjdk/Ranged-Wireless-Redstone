@@ -14,6 +14,8 @@ import net.minecraft.world.entity.player.Player;
 
 public class TransmitterCell extends AbstractWirelessCell {
 
+    boolean flagResetChannel = true;
+
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
         VertexConsumer builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
@@ -130,6 +132,20 @@ public class TransmitterCell extends AbstractWirelessCell {
                 super.setChannel(channel);
             }
         }
+    }
+
+    @Override
+    public boolean tick(PanelCellPos cellPos) {
+        if (flagResetChannel) {
+            this.panelCellPos = cellPos;
+            if (panelCellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel) {
+                ChannelData.getChannelData(serverLevel).setTransmitterChannel(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), getChannel());
+                ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), getStrongSignal());
+                ChannelData.getChannelData(serverLevel).setTransmitterWeakSignal(cellPos.getPanelTile().getBlockPos(), cellPos.getIndex(), getWeakSignal());
+            }
+            flagResetChannel = false;
+        }
+        return false;
     }
 
     @Override

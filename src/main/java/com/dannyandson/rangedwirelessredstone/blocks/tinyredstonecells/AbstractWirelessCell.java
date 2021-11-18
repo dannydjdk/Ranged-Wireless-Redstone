@@ -38,6 +38,7 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     public CompoundTag writeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putInt("signal", strongSignal);
+        compoundTag.putInt("weaksignal", weakSignal);
         compoundTag.putInt("channel",channel);
         return compoundTag;
     }
@@ -45,6 +46,7 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     @Override
     public void readNBT(CompoundTag compoundTag) {
         strongSignal =compoundTag.getInt("signal");
+        weakSignal =compoundTag.getInt("weaksignal");
         channel=compoundTag.getInt("channel");
     }
 
