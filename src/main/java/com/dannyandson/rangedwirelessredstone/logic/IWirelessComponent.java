@@ -4,8 +4,10 @@ import net.minecraft.util.math.BlockPos;
 
 public interface IWirelessComponent {
 
-    int getSignal();
-    void setSignal(int signal);
+    int getStrongSignal();
+    int getWeakSignal();
+
+    void setSignals(int weak, int strong);
 
     int getChannel();
     void setChannel(int channel);

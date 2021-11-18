@@ -93,7 +93,7 @@ public class ReceiverBlock extends Block {
     public int getDirectSignal(BlockState blockState, IBlockReader blockGetter, BlockPos pos, Direction direction) {
         TileEntity te = blockGetter.getBlockEntity(pos);
         if (te instanceof IWirelessComponent) {
-            return ((IWirelessComponent)te).getSignal();
+            return ((IWirelessComponent)te).getStrongSignal();
         }
         return super.getDirectSignal(blockState, blockGetter, pos, direction);
     }
@@ -101,7 +101,12 @@ public class ReceiverBlock extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public int getSignal(BlockState blockState, IBlockReader blockGetter, BlockPos pos, Direction direction) {
-        return getDirectSignal(blockState, blockGetter, pos, direction);
+        TileEntity tileEntity = blockGetter.getBlockEntity(pos);
+        if (tileEntity instanceof IWirelessComponent) {
+            IWirelessComponent component = (IWirelessComponent) tileEntity;
+            return component.getWeakSignal();
+        }
+        return super.getSignal(blockState, blockGetter, pos, direction);
     }
 
     @SuppressWarnings("deprecation")

@@ -12,6 +12,8 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import java.util.Map;
+
 public class ReceiverCell extends AbstractWirelessCell{
     @Override
     public void render(MatrixStack poseStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay, float alpha) {
@@ -90,22 +92,22 @@ public class ReceiverCell extends AbstractWirelessCell{
 
     @Override
     public int getWeakRsOutput(Side side) {
-        return this.getSignal();
+        return this.getWeakSignal();
     }
 
     @Override
     public int getStrongRsOutput(Side side) {
-        return this.getSignal();
+        return this.getStrongSignal();
     }
 
     @Override
     public boolean tick(PanelCellPos cellPos) {
         this.panelCellPos=cellPos;
-        World world = cellPos.getPanelTile().getLevel();
         if (cellPos.getPanelTile().getLevel() instanceof ServerWorld){
-            int signal = ChannelData.getChannelData((ServerWorld) world).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
-            if (signal!=getSignal()){
-                setSignal(signal);
+            ServerWorld serverLevel = (ServerWorld) cellPos.getPanelTile().getLevel();
+            Map<String,Integer> signals = ChannelData.getChannelData(serverLevel).getChannelSignal(getChannel(),cellPos.getPanelTile().getBlockPos());
+            if (signals.get("strong")!= getStrongSignal() || signals.get("weak")!= getWeakSignal()){
+                setSignals(signals.get("weak"),signals.get("strong"));
                 return true;
             }
         }

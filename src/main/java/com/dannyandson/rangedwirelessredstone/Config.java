@@ -15,9 +15,9 @@ public class Config {
 
         SERVER_BUILDER.comment("Balance Settings").push(CATEGORY_GENERAL);
         RANGE_BLOCK = SERVER_BUILDER.comment("Range of transmitter block. How many blocks should the signal travel in each direction?")
-                .defineInRange("range_block", 128, 1, Integer.MAX_VALUE);
+                .defineInRange("range_block", 256, 1, Integer.MAX_VALUE);
         RANGE_CELL = SERVER_BUILDER.comment("Range of tiny transmitter block. How many blocks should the signal travel in each direction?")
-                .defineInRange("range_cell", 32, 1, Integer.MAX_VALUE);
+                .defineInRange("range_cell", 64, 1, Integer.MAX_VALUE);
         SERVER_BUILDER.pop();
 
         SERVER_CONFIG = SERVER_BUILDER.build();

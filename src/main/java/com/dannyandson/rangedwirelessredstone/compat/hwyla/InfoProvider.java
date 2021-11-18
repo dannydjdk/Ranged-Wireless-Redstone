@@ -44,7 +44,7 @@ public class InfoProvider implements IWailaPlugin, IComponentProvider {
                 ));
                 tooltip.add(new RenderableTextComponent(
                         getItemStackRenderable(new ItemStack(Items.REDSTONE)),
-                        getStringRenderable("Signal: " + wirelessEntity.getSignal())
+                        getStringRenderable("Signal: " + wirelessEntity.getWeakSignal())
                 ));
 
             }

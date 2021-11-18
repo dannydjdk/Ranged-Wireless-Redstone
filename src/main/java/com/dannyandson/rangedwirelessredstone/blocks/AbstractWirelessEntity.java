@@ -13,7 +13,8 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractWirelessEntity  extends TileEntity implements IWirelessComponent {
 
-    protected int signal = 0;
+    protected int strongSignal = 0;
+    protected int weakSignal = 0;
     protected int channel = 0;
 
     public AbstractWirelessEntity(TileEntityType<?extends AbstractWirelessEntity> type) {
@@ -21,8 +22,13 @@ public abstract class AbstractWirelessEntity  extends TileEntity implements IWir
     }
 
     @Override
-    public int getSignal() {
-        return signal;
+    public int getStrongSignal() {
+        return strongSignal;
+    }
+
+    @Override
+    public int getWeakSignal() {
+        return weakSignal;
     }
 
     @Override
@@ -51,7 +57,7 @@ public abstract class AbstractWirelessEntity  extends TileEntity implements IWir
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT nbt = pkt.getTag();
-        this.signal = nbt.getInt("signal");
+        this.strongSignal = nbt.getInt("signal");
         this.channel = nbt.getInt("channel");
     }
 
@@ -66,13 +72,15 @@ public abstract class AbstractWirelessEntity  extends TileEntity implements IWir
     @Override
     public void load(BlockState blockState, CompoundNBT nbt) {
         super.load(blockState, nbt);
-        this.signal = nbt.getInt("signal");
+        this.strongSignal = nbt.getInt("signal");
+        this.weakSignal = nbt.getInt("weaksignal");
         this.channel = nbt.getInt("channel");
     }
 
     @Override
     public CompoundNBT save(CompoundNBT nbt) {
-        nbt.putInt("signal",this.signal);
+        nbt.putInt("signal",this.strongSignal);
+        nbt.putInt("weaksignal",this.weakSignal);
         nbt.putInt("channel",this.channel);
         return super.save(nbt);
     }

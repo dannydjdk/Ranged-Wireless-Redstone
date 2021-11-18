@@ -12,11 +12,14 @@ public class TransmitterBlockEntity extends AbstractWirelessEntity {
     }
 
     @Override
-    public void setSignal(int signal) {
-        if (signal != this.signal) {
-            if (this.level instanceof ServerWorld)
-                ChannelData.getChannelData((ServerWorld) this.level).setTransmitterSignal(getBlockPos(), signal);
-            this.signal = signal;
+    public void setSignals(int weak,int strong) {
+        if (weak != this.weakSignal || strong != this.strongSignal) {
+            if (this.level instanceof ServerWorld) {
+                ChannelData.getChannelData((ServerWorld) level).setTransmitterWeakSignal(getBlockPos(), weak);
+                ChannelData.getChannelData((ServerWorld) level).setTransmitterStrongSignal(getBlockPos(), strong);
+            }
+            this.weakSignal = weak;
+            this.strongSignal = strong;
             sync();
         }
     }

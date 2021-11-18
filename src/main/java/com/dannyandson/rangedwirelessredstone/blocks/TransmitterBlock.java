@@ -69,9 +69,9 @@ public class TransmitterBlock extends Block {
             ServerWorld serverLevel = (ServerWorld) level;
             TransmitterBlockEntity transmitterEntity = (TransmitterBlockEntity) te;
             ChannelData.getChannelData(serverLevel).setTransmitterChannel(pos, 0);
-            ChannelData.getChannelData(serverLevel).setTransmitterSignal(pos, 0);
+            ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(pos,0);
             int signal = level.getDirectSignalTo(pos);
-            transmitterEntity.setSignal(signal);
+            transmitterEntity.setSignals(signal,signal);
         }
     }
 
@@ -91,7 +91,7 @@ public class TransmitterBlock extends Block {
         if (te instanceof TransmitterBlockEntity) {
             if (level instanceof ServerWorld) {
                 int signal = level.getDirectSignalTo(pos);
-                ((TransmitterBlockEntity) te).setSignal(signal);
+                ((TransmitterBlockEntity) te).setSignals(signal,signal);
             }
         } else {
             super.neighborChanged(blockState, level, pos, block, neighborPos, isMoving);
