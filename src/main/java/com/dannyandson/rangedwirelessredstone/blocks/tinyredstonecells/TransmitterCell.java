@@ -73,7 +73,6 @@ public class TransmitterCell extends AbstractWirelessCell {
 
     @Override
     public boolean neighborChanged(PanelCellPos cellPos) {
-        this.panelCellPos = cellPos;
         PanelCellNeighbor rightNeighbor = cellPos.getNeighbor(Side.RIGHT),
                 leftNeighbor = cellPos.getNeighbor(Side.LEFT),
                 backNeighbor = cellPos.getNeighbor(Side.BACK),
@@ -136,6 +135,10 @@ public class TransmitterCell extends AbstractWirelessCell {
 
     @Override
     public boolean tick(PanelCellPos cellPos) {
+        if (this.panelCellPos!=null && this.panelCellPos.getIndex()!=cellPos.getIndex()){
+            onRemove(this.panelCellPos);
+            flagResetChannel=true;
+        }
         if (flagResetChannel) {
             this.panelCellPos = cellPos;
             if (panelCellPos.getPanelTile().getLevel() instanceof ServerLevel serverLevel) {
