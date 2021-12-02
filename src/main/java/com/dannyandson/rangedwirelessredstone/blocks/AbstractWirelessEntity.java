@@ -5,10 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +40,7 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     protected void sync()
     {
         if (!level.isClientSide)
-            this.level.sendBlockUpdated(worldPosition,this.getBlockState(),this.getBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
+            this.level.sendBlockUpdated(worldPosition,this.getBlockState(),this.getBlockState(), Block.UPDATE_CLIENTS);
         this.setChanged();
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(),-1,this.getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -63,7 +63,7 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag nbt = new CompoundTag();
-        this.save(nbt);
+        this.saveAdditional(nbt);
         return nbt;
     }
 
@@ -76,10 +76,10 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
-        nbt.putInt("signal",this.strongSignal);
-        nbt.putInt("weaksignal",this.weakSignal);
-        nbt.putInt("channel",this.channel);
-        return super.save(nbt);
+    protected void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        nbt.putInt("signal", this.strongSignal);
+        nbt.putInt("weaksignal", this.weakSignal);
+        nbt.putInt("channel", this.channel);
     }
 }

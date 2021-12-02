@@ -21,6 +21,7 @@ build
 eclipse
 run
 runServer
+sandbox
 
 # Files from Forge MDK
 forge*changelog.txt

@@ -6,14 +6,13 @@ import com.dannyandson.rangedwirelessredstone.blocks.ReceiverBlockEntity;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlock;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockEntity;
 import com.dannyandson.rangedwirelessredstone.items.WirelessFullItem;
-import com.dannyandson.rangedwirelessredstone.items.WirelessPanelCellItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class Registration {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RangedWirelessRedstone.MODID);
