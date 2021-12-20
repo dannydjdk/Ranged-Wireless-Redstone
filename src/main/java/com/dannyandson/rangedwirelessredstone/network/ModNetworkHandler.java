@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -45,11 +46,13 @@ public class ModNetworkHandler {
                 .consumer(NetworkViewerTrigger::handle)
                 .add();
 
-        INSTANCE.messageBuilder(PanelCellSync.class,nextID())
-                .encoder(PanelCellSync::toBytes)
-                .decoder(PanelCellSync::new)
-                .consumer(PanelCellSync::handle)
-                .add();
+        if (ModList.get().isLoaded("tinyredstone")) {
+            INSTANCE.messageBuilder(PanelCellSync.class, nextID())
+                    .encoder(PanelCellSync::toBytes)
+                    .decoder(PanelCellSync::new)
+                    .consumer(PanelCellSync::handle)
+                    .add();
+        }
 
     }
 

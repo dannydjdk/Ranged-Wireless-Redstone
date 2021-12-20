@@ -90,8 +90,9 @@ public class TransmitterBlock extends Block {
         TileEntity te = level.getBlockEntity(pos);
         if (te instanceof TransmitterBlockEntity) {
             if (level instanceof ServerWorld) {
-                int signal = level.getDirectSignalTo(pos);
-                ((TransmitterBlockEntity) te).setSignals(signal,signal);
+                int direct = level.getDirectSignalTo(pos);
+                int indirect = level.getBestNeighborSignal(pos);
+                ((TransmitterBlockEntity) te).setSignals(indirect,direct);
             }
         } else {
             super.neighborChanged(blockState, level, pos, block, neighborPos, isMoving);
