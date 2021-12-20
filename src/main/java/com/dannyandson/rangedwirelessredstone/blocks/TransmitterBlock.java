@@ -70,8 +70,9 @@ public class TransmitterBlock extends Block {
             TransmitterBlockEntity transmitterEntity = (TransmitterBlockEntity) te;
             ChannelData.getChannelData(serverLevel).setTransmitterChannel(pos, 0);
             ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(pos,0);
-            int signal = level.getDirectSignalTo(pos);
-            transmitterEntity.setSignals(signal,signal);
+            int direct = level.getDirectSignalTo(pos);
+            int indirect = level.getBestNeighborSignal(pos);
+            transmitterEntity.setSignals(indirect, direct);
         }
     }
 
@@ -97,6 +98,11 @@ public class TransmitterBlock extends Block {
         } else {
             super.neighborChanged(blockState, level, pos, block, neighborPos, isMoving);
         }
+    }
+
+    @Override
+    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
+        return true;
     }
 
     @SuppressWarnings("deprecation")

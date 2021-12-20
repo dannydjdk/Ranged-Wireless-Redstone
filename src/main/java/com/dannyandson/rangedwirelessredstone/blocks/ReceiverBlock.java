@@ -109,6 +109,11 @@ public class ReceiverBlock extends Block {
         return super.getSignal(blockState, blockGetter, pos, direction);
     }
 
+    @Override
+    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
+        return true;
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType use(BlockState blockState, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockHitResult) {
