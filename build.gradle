@@ -13,11 +13,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.17.1-1.0.5'
+version = '1.17.1-1.0.6'
 group = 'com.dannyandson.rangedwirelessredstone'
 archivesBaseName = 'rangedwirelessredstone'
 
-def tinyRedstoneVersion = '1.17.1-2.4.1'
+def tinyRedstoneVersion = '1.17.1-2.4.21'
 def theOneProbeFileID = '3430022'
 def jeiFileID = '3448057'
 

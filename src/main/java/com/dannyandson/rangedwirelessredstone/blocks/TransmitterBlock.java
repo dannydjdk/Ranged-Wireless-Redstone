@@ -64,8 +64,9 @@ public class TransmitterBlock extends BaseEntityBlock {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity) {
             ChannelData.getChannelData(serverLevel).setTransmitterChannel(pos, 0);
             ChannelData.getChannelData(serverLevel).setTransmitterStrongSignal(pos,0);
-            int signal = level.getDirectSignalTo(pos);
-            transmitterEntity.setSignals(signal,signal);
+            int direct = level.getDirectSignalTo(pos);
+            int indirect = level.getBestNeighborSignal(pos);
+            transmitterEntity.setSignals(indirect, direct);
         }
     }
 
@@ -82,13 +83,19 @@ public class TransmitterBlock extends BaseEntityBlock {
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
         if (level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity){
-            if (level instanceof ServerLevel serverLevel) {
-                int sSignal = level.getDirectSignalTo(pos);
-                transmitterEntity.setSignals(sSignal,sSignal);
+            if (level instanceof ServerLevel) {
+                int direct = level.getDirectSignalTo(pos);
+                int indirect = level.getBestNeighborSignal(pos);
+                transmitterEntity.setSignals(indirect, direct);
             }
         }else{
             super.neighborChanged(blockState,level,pos,block,neighborPos,isMoving);
         }
+    }
+
+    @Override
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction direction) {
+        return true;
     }
 
     @SuppressWarnings("deprecation")
