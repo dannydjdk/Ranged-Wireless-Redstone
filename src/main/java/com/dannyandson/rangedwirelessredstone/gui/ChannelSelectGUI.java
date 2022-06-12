@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class ChannelSelectGUI extends Screen {
@@ -25,7 +24,7 @@ public class ChannelSelectGUI extends Screen {
     private final ResourceLocation GUI = new ResourceLocation(RangedWirelessRedstone.MODID, "textures/gui/transparent.png");
 
     protected ChannelSelectGUI(IWirelessComponent component) {
-        super(new TranslatableComponent("rangedwirelessredstone:channelSelectGUI"));
+        super(Component.translatable("rangedwirelessredstone:channelSelectGUI"));
         this.component = component;
     }
 
@@ -41,10 +40,10 @@ public class ChannelSelectGUI extends Screen {
 
         addRenderableWidget(new ModWidget(relX-1, relY-1, WIDTH+2, HEIGHT+2, 0xAA000000));
         addRenderableWidget(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
-        addRenderableWidget(new Button(relX + 35, relY + 48, 80, 20, new TranslatableComponent("rangedwirelessredstone.gui.close"), button -> close()));
+        addRenderableWidget(new Button(relX + 35, relY + 48, 80, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
         addRenderableWidget(this.channelWidget);
 
-        addRenderableWidget(new ModWidget(relX,relY+3,WIDTH-2,20,new TranslatableComponent("rangedwirelessredstone.gui.channel")))
+        addRenderableWidget(new ModWidget(relX,relY+3,WIDTH-2,20,Component.translatable("rangedwirelessredstone.gui.channel")))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER);
         addRenderableWidget(new Button(relX + 10, relY + 15, 20, 20, Component.nullToEmpty("--"), button -> changeChannel(-10)));
         addRenderableWidget(new Button(relX + 35, relY + 15, 20, 20, Component.nullToEmpty("-"), button -> changeChannel(-1)));

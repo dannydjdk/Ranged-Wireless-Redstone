@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -35,7 +34,7 @@ public class NetworkViewerGUI extends Screen {
     private List<ModWidget> listWidgets = new ArrayList<>();
 
     protected NetworkViewerGUI(CompoundTag networkNBT) {
-        super(new TranslatableComponent("rangedwirelessredstone:networkViewerGUI"));
+        super(Component.translatable("rangedwirelessredstone:networkViewerGUI"));
         this.networkNBT=networkNBT;
     }
 
@@ -91,7 +90,7 @@ public class NetworkViewerGUI extends Screen {
 
         setWidgetList();
 
-        addRenderableWidget(new Button(relX + WIDTH - 70, relY + HEIGHT - 25, 50, 20, new TranslatableComponent("rangedwirelessredstone.gui.close"), button -> close()));
+        addRenderableWidget(new Button(relX + WIDTH - 70, relY + HEIGHT - 25, 50, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
         if(this.minecraft.player.hasPermissions(2))
             addRenderableWidget(new Button(relX + 20, relY + HEIGHT - 25, 50, 20, Component.nullToEmpty("Clean Up"), button -> cleanUpNetwork()));
     }

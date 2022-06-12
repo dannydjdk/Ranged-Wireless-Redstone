@@ -4,7 +4,6 @@ import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,9 +22,9 @@ public class WirelessFullItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flags) {
         if (Screen.hasShiftDown()) {
-            list.add(new TranslatableComponent("message." + this.getDescriptionId()).withStyle(ChatFormatting.DARK_AQUA));
+            list.add(Component.translatable("message." + this.getDescriptionId()).withStyle(ChatFormatting.DARK_AQUA));
         } else
-            list.add(new TranslatableComponent("rangedwirelessredstone.tooltip.press_shift").withStyle(ChatFormatting.DARK_GRAY));
+            list.add(Component.translatable("rangedwirelessredstone.tooltip.press_shift").withStyle(ChatFormatting.DARK_GRAY));
     }
 
 }
