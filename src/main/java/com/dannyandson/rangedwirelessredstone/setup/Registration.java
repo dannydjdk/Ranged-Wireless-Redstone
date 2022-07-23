@@ -17,7 +17,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class Registration {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RangedWirelessRedstone.MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RangedWirelessRedstone.MODID);
-    private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, RangedWirelessRedstone.MODID);
+    private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, RangedWirelessRedstone.MODID);
 
     //BLOCKS
     public static final RegistryObject<TransmitterBlock> TRANSMITTER_BLOCK = BLOCKS.register("redstone_transmitter", TransmitterBlock::new);
