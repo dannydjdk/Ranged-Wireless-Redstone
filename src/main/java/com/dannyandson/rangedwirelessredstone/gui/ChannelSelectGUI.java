@@ -8,7 +8,6 @@ import com.dannyandson.rangedwirelessredstone.network.SetChannel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,18 +39,18 @@ public class ChannelSelectGUI extends Screen {
 
         addRenderableWidget(new ModWidget(relX-1, relY-1, WIDTH+2, HEIGHT+2, 0xAA000000));
         addRenderableWidget(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
-        addRenderableWidget(new Button(relX + 35, relY + 48, 80, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
+        addRenderableWidget(ModWidget.buildButton(relX + 35, relY + 48, 80, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
         addRenderableWidget(this.channelWidget);
 
         addRenderableWidget(new ModWidget(relX,relY+3,WIDTH-2,20,Component.translatable("rangedwirelessredstone.gui.channel")))
                 .setTextHAlignment(ModWidget.HAlignment.CENTER);
-        addRenderableWidget(new Button(relX + 10, relY + 15, 20, 20, Component.nullToEmpty("--"), button -> changeChannel(-10)));
-        addRenderableWidget(new Button(relX + 35, relY + 15, 20, 20, Component.nullToEmpty("-"), button -> changeChannel(-1)));
+        addRenderableWidget(ModWidget.buildButton(relX + 10, relY + 15, 20, 20, Component.nullToEmpty("--"), button -> changeChannel(-10)));
+        addRenderableWidget(ModWidget.buildButton(relX + 35, relY + 15, 20, 20, Component.nullToEmpty("-"), button -> changeChannel(-1)));
 
-        addRenderableWidget(new Button(relX + 95, relY + 15, 20, 20, Component.nullToEmpty("+"), button -> changeChannel(1)));
-        addRenderableWidget(new Button(relX + 125, relY + 15, 20, 20, Component.nullToEmpty("++"), button -> changeChannel(10)));
+        addRenderableWidget(ModWidget.buildButton(relX + 95, relY + 15, 20, 20, Component.nullToEmpty("+"), button -> changeChannel(1)));
+        addRenderableWidget(ModWidget.buildButton(relX + 125, relY + 15, 20, 20, Component.nullToEmpty("++"), button -> changeChannel(10)));
 
-        addRenderableWidget(new Button(relX + 125, relY + 48, 20, 20, Component.nullToEmpty("☁"), button -> openNetworkViewer()));
+        addRenderableWidget(ModWidget.buildButton(relX + 125, relY + 48, 20, 20, Component.nullToEmpty("☁"), button -> openNetworkViewer()));
     }
 
     private void close() {

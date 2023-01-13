@@ -1,6 +1,5 @@
 package com.dannyandson.rangedwirelessredstone.items;
 
-import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import com.dannyandson.tinyredstone.api.AbstractPanelCellItem;
 import com.dannyandson.tinyredstone.blocks.PanelBlock;
 import net.minecraft.ChatFormatting;
@@ -19,7 +18,7 @@ import java.util.List;
 public class WirelessPanelCellItem extends AbstractPanelCellItem {
 
     public WirelessPanelCellItem() {
-        super(new Item.Properties().tab(ModSetup.ITEM_GROUP));
+        super(new Item.Properties());
     }
 
     @Override

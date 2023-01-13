@@ -8,7 +8,6 @@ import com.dannyandson.rangedwirelessredstone.network.ServerNetworkTrigger;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -90,9 +89,9 @@ public class NetworkViewerGUI extends Screen {
 
         setWidgetList();
 
-        addRenderableWidget(new Button(relX + WIDTH - 70, relY + HEIGHT - 25, 50, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
+        addRenderableWidget(ModWidget.buildButton(relX + WIDTH - 70, relY + HEIGHT - 25, 50, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
         if(this.minecraft.player.hasPermissions(2))
-            addRenderableWidget(new Button(relX + 20, relY + HEIGHT - 25, 50, 20, Component.nullToEmpty("Clean Up"), button -> cleanUpNetwork()));
+            addRenderableWidget(ModWidget.buildButton(relX + 20, relY + HEIGHT - 25, 50, 20, Component.nullToEmpty("Clean Up"), button -> cleanUpNetwork()));
     }
 
     private void setWidgetList(){

@@ -1,6 +1,5 @@
 package com.dannyandson.rangedwirelessredstone.items;
 
-import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class WirelessFullItem extends BlockItem {
     public WirelessFullItem(Block block) {
-        super(block,new Item.Properties().tab(ModSetup.ITEM_GROUP));
+        super(block,new Item.Properties());
     }
 
     @Override

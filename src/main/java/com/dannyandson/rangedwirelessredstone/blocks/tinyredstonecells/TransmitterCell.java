@@ -6,7 +6,7 @@ import com.dannyandson.tinyredstone.api.IOverlayBlockInfo;
 import com.dannyandson.tinyredstone.blocks.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +31,7 @@ public class TransmitterCell extends AbstractWirelessCell {
         RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.4375f,.5625f,RenderHelper.SPRITE_PANEL_RED,combinedLight,combinedOverlay);
         poseStack.popPose();
 
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
 
         poseStack.pushPose();
         poseStack.translate(0,0,-.25);
@@ -39,19 +39,19 @@ public class TransmitterCell extends AbstractWirelessCell {
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
         poseStack.translate(0,0,.75);
         drawSide(poseStack,builder,combinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(-1,0,.75);
         drawSide(poseStack,builder,combinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(270));
+        poseStack.mulPose(Axis.YP.rotationDegrees(270));
         poseStack.translate(-1,0,-.25);
         drawSide(poseStack,builder,combinedLight,combinedOverlay);
         poseStack.popPose();

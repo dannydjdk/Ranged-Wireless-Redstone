@@ -6,7 +6,7 @@ import com.dannyandson.tinyredstone.blocks.PanelCellPos;
 import com.dannyandson.tinyredstone.blocks.Side;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +30,7 @@ public class ReceiverCell extends AbstractWirelessCell{
         RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.6875f,.75f,RenderHelper.SPRITE_PANEL_RED,combinedLight,combinedOverlay);
         poseStack.popPose();
 
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
 
         //render back faces
         poseStack.pushPose();
@@ -44,7 +44,7 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
         poseStack.translate(0,0,.875);
         RenderHelper.drawRectangle(builder,poseStack,.5f,.8125f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,-.0625);
@@ -56,7 +56,7 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(-1,0,.8125);
         RenderHelper.drawRectangle(builder,poseStack,.125f,.875f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,-.0625);
@@ -67,7 +67,7 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(270));
+        poseStack.mulPose(Axis.YP.rotationDegrees(270));
         poseStack.translate(-1.3125,0,-.125);
         RenderHelper.drawRectangle(builder,poseStack,.5f,.8125f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(-.125,0,-.0625);

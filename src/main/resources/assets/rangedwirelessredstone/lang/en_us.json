@@ -1,5 +1,5 @@
 {
-  "itemGroup.rangedwirelessredstone": "Ranged Wireless Redstone",
+  "rangedwirelessredstone": "Ranged Wireless Redstone",
 
   "block.rangedwirelessredstone.redstone_transmitter": "Redstone Transmitter",
   "message.block.rangedwirelessredstone.redstone_transmitter": "Wirelessly transmits redstone signals it receives from neighboring blocks.",
