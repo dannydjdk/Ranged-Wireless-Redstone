@@ -79,45 +79,6 @@
     },
     {
       "from": [
-        7,
-        12,
-        7
-      ],
-      "to": [
-        9,
-        14,
-        9
-      ],
-      "shade": false,
-      "faces": {
-        "down": {
-          "texture": "#red",
-          "tintindex": 0
-        },
-        "up": {
-          "texture": "#red",
-          "tintindex": 0
-        },
-        "east": {
-          "texture": "#red",
-          "tintindex": 0
-        },
-        "west": {
-          "texture": "#red",
-          "tintindex": 0
-        },
-        "north": {
-          "texture": "#red",
-          "tintindex": 0
-        },
-        "south": {
-          "texture": "#red",
-          "tintindex": 0
-        }
-      }
-    },
-    {
-      "from": [
         4,
         2,
         4
