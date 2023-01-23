@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TransmitterBlockRenderer implements BlockEntityRenderer<TransmitterBlockEntity> {
 
@@ -19,8 +17,11 @@ public class TransmitterBlockRenderer implements BlockEntityRenderer<Transmitter
     @Override
     public void render(TransmitterBlockEntity transmitterBlockEntity, float p_112308_, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 
-        TextureAtlasSprite sprite = (transmitterBlockEntity.getStrongSignal() + transmitterBlockEntity.getWeakSignal() > 0) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
+        boolean signal = (transmitterBlockEntity.getStrongSignal() + transmitterBlockEntity.getWeakSignal() > 0);
+        TextureAtlasSprite sprite = (signal) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
         VertexConsumer builder = buffer.getBuffer(RenderType.solid());
+        if (signal)
+            combinedLight = 15728880;
 
         poseStack.pushPose();
 

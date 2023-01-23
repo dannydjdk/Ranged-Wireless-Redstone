@@ -19,9 +19,13 @@ public class ReceiverBlockRenderer  implements BlockEntityRenderer<ReceiverBlock
     @Override
     public void render(ReceiverBlockEntity receiverBlockEntity, float p_112308_, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 
-        TextureAtlasSprite sprite = (receiverBlockEntity.getStrongSignal() + receiverBlockEntity.getWeakSignal() > 0) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
         Direction facing = receiverBlockEntity.getBlockState().getValue(BlockStateProperties.FACING);
+
+        boolean signal = (receiverBlockEntity.getStrongSignal() + receiverBlockEntity.getWeakSignal() > 0);
+        TextureAtlasSprite sprite = (signal) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
         VertexConsumer builder = buffer.getBuffer(RenderType.solid());
+        if (signal)
+            combinedLight = 15728880;
 
         poseStack.pushPose();
         if (facing == Direction.WEST) {

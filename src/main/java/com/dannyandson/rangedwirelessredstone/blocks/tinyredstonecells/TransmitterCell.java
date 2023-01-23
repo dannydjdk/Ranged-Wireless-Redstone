@@ -20,7 +20,9 @@ public class TransmitterCell extends AbstractWirelessCell {
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
         VertexConsumer builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
-        TextureAtlasSprite redsprite = (this.getStrongSignal()+this.getWeakSignal()>0)?RenderHelper.SPRITE_PANEL_RED:RenderHelper.SPRITE_PANEL_DARKRED;
+        boolean hasSignal = this.getStrongSignal()+this.getWeakSignal()>0;
+        TextureAtlasSprite redsprite = (hasSignal)?RenderHelper.SPRITE_PANEL_RED:RenderHelper.SPRITE_PANEL_DARKRED;
+        int redCombinedLight = (hasSignal)?15728880:combinedLight;
 
         //render slab
         RenderHelper.drawQuarterSlab(poseStack,builder,RenderHelper.SPRITE_PANEL_LIGHT,RenderHelper.SPRITE_PANEL_DARK,combinedLight,alpha);
@@ -30,39 +32,39 @@ public class TransmitterCell extends AbstractWirelessCell {
         poseStack.translate(0,0,.325);
         RenderHelper.drawRectangle(builder,poseStack,.25f,.75f,.25f,.75f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,.55);
-        RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.4375f,.5625f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.4375f,.5625f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.mulPose(Axis.XP.rotationDegrees(90));
 
         poseStack.pushPose();
         poseStack.translate(0,0,-.25);
-        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay);
+        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(90));
         poseStack.translate(0,0,.75);
-        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay);
+        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(-1,0,.75);
-        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay);
+        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(270));
         poseStack.translate(-1,0,-.25);
-        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay);
+        drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
     }
-    private void drawSide(PoseStack poseStack,VertexConsumer builder,TextureAtlasSprite redsprite, int combinedLight, int combinedOverlay){
+    private void drawSide(PoseStack poseStack,VertexConsumer builder,TextureAtlasSprite redsprite, int combinedLight, int combinedOverlay, int redCombinedLight){
         RenderHelper.drawRectangle(builder,poseStack,.25f,.75f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,-.1875);
         RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.3125f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
     }
 
     @Override

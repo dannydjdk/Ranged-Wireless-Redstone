@@ -18,7 +18,9 @@ public class ReceiverCell extends AbstractWirelessCell{
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
         VertexConsumer builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
-        TextureAtlasSprite redsprite = (this.getStrongSignal()+this.getWeakSignal()>0)?RenderHelper.SPRITE_PANEL_RED:RenderHelper.SPRITE_PANEL_DARKRED;
+        boolean hasSignal = this.getStrongSignal()+this.getWeakSignal()>0;
+        TextureAtlasSprite redsprite = (hasSignal)?RenderHelper.SPRITE_PANEL_RED:RenderHelper.SPRITE_PANEL_DARKRED;
+        int redCombinedLight = (hasSignal)?15728880:combinedLight;
 
         //render slab
         RenderHelper.drawQuarterSlab(poseStack,builder,RenderHelper.SPRITE_PANEL_LIGHT,RenderHelper.SPRITE_PANEL_DARK,combinedLight,alpha);
@@ -28,8 +30,8 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.translate(0,0,.325);
         RenderHelper.drawRectangle(builder,poseStack,.125f,.875f,.5f,.8125f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,.55);
-        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.6875f,.75f,redsprite,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.6875f,.75f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.6875f,.75f,redsprite,redCombinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.6875f,.75f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.mulPose(Axis.XP.rotationDegrees(90));
@@ -41,8 +43,8 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.translate(0,0,-.1875);
         RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
         RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -51,10 +53,10 @@ public class ReceiverCell extends AbstractWirelessCell{
         RenderHelper.drawRectangle(builder,poseStack,.5f,.8125f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(0,0,-.0625);
         RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.translate(0,0,-.5625);
         RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -64,8 +66,8 @@ public class ReceiverCell extends AbstractWirelessCell{
         poseStack.translate(0,0,-.0625);
         RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
         RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.1875f,.25f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.75f,.8125f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -74,12 +76,12 @@ public class ReceiverCell extends AbstractWirelessCell{
         RenderHelper.drawRectangle(builder,poseStack,.5f,.8125f,.25f,.325f,RenderHelper.SPRITE_PANEL_DARK,combinedLight,combinedOverlay);
         poseStack.translate(-.125,0,-.0625);
         RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.translate(0,0,-.5625);
         RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.325f,.75f,RenderHelper.SPRITE_PANEL_LIGHT,combinedLight,combinedOverlay);
-        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,combinedLight,combinedOverlay);
+        RenderHelper.drawRectangle(builder,poseStack,.6875f,.75f,.75f,.875f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
-    }
+   }
 
     @Override
     public boolean neighborChanged(PanelCellPos panelCellPos) {
