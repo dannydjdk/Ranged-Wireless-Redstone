@@ -79,6 +79,45 @@
     },
     {
       "from": [
+        7.01,
+        12.01,
+        7.01
+      ],
+      "to": [
+        8.99,
+        13.99,
+        8.99
+      ],
+      "shade": false,
+      "faces": {
+        "down": {
+          "texture": "#red",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#red",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#red",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#red",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#red",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#red",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
         4,
         2,
         4
