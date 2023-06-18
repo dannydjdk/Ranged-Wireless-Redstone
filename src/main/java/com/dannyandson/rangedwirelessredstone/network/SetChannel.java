@@ -47,7 +47,7 @@ public class SetChannel {
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
 
         ctx.get().enqueueWork(()-> {
-            BlockEntity blockEntity = ctx.get().getSender().getLevel().getBlockEntity(pos);
+            BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(pos);
             if (blockEntity instanceof AbstractWirelessEntity wirelessEntity)
                 wirelessEntity.setChannel(channel);
             else if (cellIndex!=null && ModList.get().isLoaded("tinyredstone") && blockEntity instanceof PanelTile panelTile) {

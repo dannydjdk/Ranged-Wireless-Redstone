@@ -31,26 +31,26 @@ public class ModNetworkHandler {
         INSTANCE.messageBuilder(SetChannel.class,nextID())
                 .encoder(SetChannel::toBytes)
                 .decoder(SetChannel::new)
-                .consumer(SetChannel::handle)
+                .consumerNetworkThread(SetChannel::handle)
                 .add();
 
         INSTANCE.messageBuilder(ServerNetworkTrigger.class,nextID())
                 .encoder(ServerNetworkTrigger::toBytes)
                 .decoder(ServerNetworkTrigger::new)
-                .consumer(ServerNetworkTrigger::handle)
+                .consumerNetworkThread(ServerNetworkTrigger::handle)
                 .add();
 
         INSTANCE.messageBuilder(NetworkViewerTrigger.class,nextID())
                 .encoder(NetworkViewerTrigger::toBytes)
                 .decoder(NetworkViewerTrigger::new)
-                .consumer(NetworkViewerTrigger::handle)
+                .consumerNetworkThread(NetworkViewerTrigger::handle)
                 .add();
 
         if (ModList.get().isLoaded("tinyredstone")) {
             INSTANCE.messageBuilder(PanelCellSync.class, nextID())
                     .encoder(PanelCellSync::toBytes)
                     .decoder(PanelCellSync::new)
-                    .consumer(PanelCellSync::handle)
+                    .consumerNetworkThread(PanelCellSync::handle)
                     .add();
         }
     }
