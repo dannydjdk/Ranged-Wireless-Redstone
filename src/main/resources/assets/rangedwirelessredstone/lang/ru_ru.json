@@ -1,0 +1,16 @@
+{
+  "rangedwirelessredstone": "Беспроводной редстоун",
+
+  "block.rangedwirelessredstone.redstone_transmitter": "Редстоуновый передатчик",
+  "message.block.rangedwirelessredstone.redstone_transmitter": "Передает редстоун сигнал по воздуху от соседних блоков.",
+  "block.rangedwirelessredstone.redstone_receiver": "Редстоуновый приемник",
+  "message.block.rangedwirelessredstone.redstone_receiver": "Принимает редстоун сигнал по воздуху с ближайших передатчиков на том же канале.",
+  "item.rangedwirelessredstone.tiny_redstone_transmitter": "Маленький Редстоуновый передатчик",
+  "message.item.rangedwirelessredstone.tiny_redstone_transmitter": "Передает редстоун сигнал по воздуху от соседних маленьких блоков.",
+  "item.rangedwirelessredstone.tiny_redstone_receiver": "Маленький Редстоуновый приемник",
+  "message.item.rangedwirelessredstone.tiny_redstone_receiver": "Принимает редстоун сигнал по воздуху с ближайших передатчиков на том же канале.",
+
+  "rangedwirelessredstone.gui.channel": "Установить канал",
+  "rangedwirelessredstone.gui.close": "Закрыть",
+  "rangedwirelessredstone.tooltip.press_shift": "--Нажмите Shift для большей информации--"
+}
