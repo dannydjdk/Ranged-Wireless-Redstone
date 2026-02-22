@@ -1,12 +1,8 @@
 package com.dannyandson.rangedwirelessredstone.network;
 
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
-import com.dannyandson.tinyredstone.blocks.PanelTile;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -33,20 +29,7 @@ public class ModNetworkHandler {
         }
     }
 
-    public static void sendToClient(Object packet, ServerPlayer player) {
-        if (packet instanceof NetworkViewerTrigger trigger) {
-            PacketDistributor.sendToPlayer(player, trigger);
-        }
-    }
-
-    public static void sendToClient(Object packet, PanelTile panelTile) {
-        BlockPos pos = panelTile.getBlockPos();
-        for (Player player : panelTile.getLevel().players()) {
-            if (player instanceof ServerPlayer serverPlayer && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64d) {
-                if (packet instanceof NetworkViewerTrigger trigger) {
-                    PacketDistributor.sendToPlayer(serverPlayer, trigger);
-                }
-            }
-        }
+    public static void sendToClient(NetworkViewerTrigger packet, ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, packet);
     }
 }

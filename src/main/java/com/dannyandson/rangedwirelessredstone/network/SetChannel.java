@@ -2,9 +2,7 @@ package com.dannyandson.rangedwirelessredstone.network;
 
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.blocks.AbstractWirelessEntity;
-import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.AbstractWirelessCell;
-import com.dannyandson.tinyredstone.blocks.PanelCellPos;
-import com.dannyandson.tinyredstone.blocks.PanelTile;
+import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TinyRedstoneHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -40,11 +38,8 @@ public record SetChannel(BlockPos pos, int cellIndex, int channel, boolean hasCe
             BlockEntity blockEntity = ctx.player().level().getBlockEntity(pkt.pos());
             if (blockEntity instanceof AbstractWirelessEntity wirelessEntity)
                 wirelessEntity.setChannel(pkt.channel());
-            else if (pkt.hasCellIndex() && ModList.get().isLoaded("tinyredstone") && blockEntity instanceof PanelTile panelTile) {
-                PanelCellPos panelCellPos = PanelCellPos.fromIndex(panelTile, pkt.cellIndex());
-                if (panelCellPos.getIPanelCell() instanceof AbstractWirelessCell wirelessCell)
-                    wirelessCell.setChannel(pkt.channel());
-            }
+            else if (pkt.hasCellIndex() && ModList.get().isLoaded("tinyredstone"))
+                TinyRedstoneHelper.trySetCellChannel(blockEntity, pkt.cellIndex(), pkt.channel());
         });
     }
 }

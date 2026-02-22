@@ -2,7 +2,6 @@ package com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells;
 
 import com.dannyandson.rangedwirelessredstone.gui.ChannelSelectGUI;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
-import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
 import com.dannyandson.tinyredstone.api.IOverlayBlockInfo;
 import com.dannyandson.tinyredstone.api.IPanelCell;
 import com.dannyandson.tinyredstone.api.IPanelCellInfoProvider;
@@ -85,7 +84,10 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     public void setChannel(int channel) {
         this.channel = channel;
         if (panelCellPos!=null && !panelCellPos.getPanelTile().getLevel().isClientSide)
-            ModNetworkHandler.sendToClient(new PanelCellSync(panelCellPos.getPanelTile().getBlockPos(), panelCellPos.getIndex(), writeNBT()), panelCellPos.getPanelTile());
+            TinyRedstoneHelper.sendPanelCellSyncToNearby(
+                    panelCellPos.getPanelTile(),
+                    new PanelCellSync(panelCellPos.getPanelTile().getBlockPos(), panelCellPos.getIndex(), writeNBT())
+            );
     }
 
     @Override

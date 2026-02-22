@@ -3,9 +3,7 @@ package com.dannyandson.rangedwirelessredstone.logic;
 import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockEntity;
-import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TransmitterCell;
-import com.dannyandson.tinyredstone.blocks.PanelCellPos;
-import com.dannyandson.tinyredstone.blocks.PanelTile;
+import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TinyRedstoneHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -121,16 +119,15 @@ public class ChannelData {
     }
 
     public void cleanupTransmitters(BlockGetter blockGetter) {
+        boolean tinyRedstoneLoaded = ModList.get().isLoaded("tinyredstone");
+
         for (Map.Entry<Integer, List<String>> entry : saveData.channelPosMap.entrySet()) {
             for (String posString : entry.getValue()) {
                 int[] coords = getXYZiFromPosString(posString);
                 BlockPos pos = new BlockPos(coords[0], coords[1], coords[2]);
                 BlockEntity blockEntity = blockGetter.getBlockEntity(pos);
-                if (ModList.get().isLoaded("tinyredstone") && coords.length == 4 && blockEntity instanceof PanelTile panelTile) {
-                    PanelCellPos panelCellPos = PanelCellPos.fromIndex(panelTile, coords[3]);
-                    if (panelCellPos.getIPanelCell() instanceof TransmitterCell transmitterCell) {
-                        transmitterCell.setChannel(entry.getKey());
-                    } else {
+                if (tinyRedstoneLoaded && coords.length == 4) {
+                    if (!TinyRedstoneHelper.cleanupPanelTransmitter(blockEntity, coords[3], entry.getKey())) {
                         removeTransmitter(posString);
                     }
                 } else if (blockEntity instanceof TransmitterBlockEntity transmitter) {
