@@ -2,10 +2,10 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.gui.ChannelSelectGUI;
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -25,6 +25,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 public class TransmitterBlock extends BaseEntityBlock {
+
+    public static final MapCodec<TransmitterBlock> CODEC = simpleCodec(p -> new TransmitterBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     private final static VoxelShape shape = Shapes.or(
             Shapes.or(
@@ -97,20 +104,14 @@ public class TransmitterBlock extends BaseEntityBlock {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity){
             if (level.isClientSide())
                 ChannelSelectGUI.open(transmitterEntity);
             return InteractionResult.CONSUME;
         }
-        return super.use(blockState, level, pos, player, hand, blockHitResult);
-    }
-
-    @Override
-    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
-        return true;
+        return super.useWithoutItem(blockState, level, pos, player, blockHitResult);
     }
 
     @Override

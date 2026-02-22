@@ -3,20 +3,18 @@ package com.dannyandson.rangedwirelessredstone.setup;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.blocks.ReceiverBlockRenderer;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockRenderer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@Mod.EventBusSubscriber(modid = RangedWirelessRedstone.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid = RangedWirelessRedstone.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
 
     public static void init(final FMLClientSetupEvent event) {
-        //ItemBlockRenderTypes.setRenderLayer(Registration.TRANSMITTER_BLOCK.get(), RenderType.solid());
-        //ItemBlockRenderTypes.setRenderLayer(Registration.RECEIVER_BLOCK.get(), RenderType.solid());
+        // No longer needed for render layer registration in 1.21
     }
 
     @SubscribeEvent
@@ -25,5 +23,4 @@ public class ClientSetup {
         event.registerBlockEntityRenderer(Registration.TRANSMITTER_BLOCK_ENTITY.get(), TransmitterBlockRenderer::new);
     }
 
-
-    }
+}

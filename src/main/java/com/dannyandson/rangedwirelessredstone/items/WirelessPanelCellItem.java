@@ -10,9 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class WirelessPanelCellItem extends AbstractPanelCellItem {
@@ -21,13 +19,13 @@ public class WirelessPanelCellItem extends AbstractPanelCellItem {
         super(new Item.Properties());
     }
 
-    @Override
+    // onBlockStartBreak removed from vanilla Item in 1.21 - remove @Override but keep method
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
         return player.level().getBlockState(pos).getBlock() instanceof PanelBlock;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flags) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flags) {
         if (Screen.hasShiftDown()) {
             list.add(Component.translatable("message.item.redstone_panel_cell").withStyle(ChatFormatting.GRAY));
             list.add(Component.translatable("message." + this.getDescriptionId()).withStyle(ChatFormatting.DARK_AQUA));

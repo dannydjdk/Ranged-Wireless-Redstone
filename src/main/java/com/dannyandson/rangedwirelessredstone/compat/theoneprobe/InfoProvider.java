@@ -17,7 +17,7 @@ public class InfoProvider implements IBlockDisplayOverride, Function<ITheOneProb
 
     @Override
     public ResourceLocation getID() {
-        return new ResourceLocation(RangedWirelessRedstone.MODID , "wireless_block");
+        return ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID , "wireless_block");
     }
 
     @Override

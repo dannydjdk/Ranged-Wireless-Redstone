@@ -5,17 +5,16 @@ import com.dannyandson.rangedwirelessredstone.setup.ClientSetup;
 import com.dannyandson.rangedwirelessredstone.setup.Registration;
 import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import com.dannyandson.rangedwirelessredstone.setup.TinyRedstoneRegistration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// The value here should match an entry in the META-INF/mods.toml file
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(RangedWirelessRedstone.MODID)
 public class RangedWirelessRedstone
 {
@@ -23,24 +22,21 @@ public class RangedWirelessRedstone
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "rangedwirelessredstone";
 
-    public RangedWirelessRedstone() {
+    public RangedWirelessRedstone(IEventBus modEventBus, ModContainer modContainer) {
 
         if (ModList.get().isLoaded("tinyredstone"))
             TinyRedstoneRegistration.register();
-        Registration.register();
+        Registration.register(modEventBus);
 
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ModSetup::init);
+        modEventBus.addListener(ModSetup::init);
 
         if(FMLEnvironment.dist.isClient()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
+            modEventBus.addListener(ClientSetup::init);
         }
 
         //load configs
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        modContainer.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
 
         CompatHandler.register();
     }

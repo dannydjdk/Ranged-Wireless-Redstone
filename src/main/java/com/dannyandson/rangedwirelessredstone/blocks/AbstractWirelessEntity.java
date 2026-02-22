@@ -2,8 +2,8 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -55,29 +55,26 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
-    }
+    // onDataPacket removed - NeoForge handles sync automatically
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag nbt = new CompoundTag();
-        this.saveAdditional(nbt);
+        this.saveAdditional(nbt, registries);
         return nbt;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.strongSignal = nbt.getInt("signal");
         this.weakSignal = nbt.getInt("weaksignal");
         this.channel = nbt.getInt("channel");
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt("signal", this.strongSignal);
         nbt.putInt("weaksignal", this.weakSignal);
         nbt.putInt("channel", this.channel);

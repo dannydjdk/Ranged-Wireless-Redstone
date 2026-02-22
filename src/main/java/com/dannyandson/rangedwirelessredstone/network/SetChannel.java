@@ -1,62 +1,50 @@
 package com.dannyandson.rangedwirelessredstone.network;
 
+import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.blocks.AbstractWirelessEntity;
 import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.AbstractWirelessCell;
 import com.dannyandson.tinyredstone.blocks.PanelCellPos;
 import com.dannyandson.tinyredstone.blocks.PanelTile;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import javax.annotation.Nullable;
-import java.util.function.Supplier;
+public record SetChannel(BlockPos pos, int cellIndex, int channel, boolean hasCellIndex) implements CustomPacketPayload {
 
-public class SetChannel {
-    private final BlockPos pos;
-    private final Integer channel;
-    private Integer cellIndex;
+    public static final Type<SetChannel> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "set_channel"));
 
-    public SetChannel(BlockPos pos, @Nullable Integer cellIndex, int channel)
-    {
-        this.pos=pos;
-        this.channel = channel;
-        this.cellIndex=cellIndex;
+    public static final StreamCodec<ByteBuf, SetChannel> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetChannel::pos,
+            ByteBufCodecs.INT, SetChannel::cellIndex,
+            ByteBufCodecs.INT, SetChannel::channel,
+            ByteBufCodecs.BOOL, SetChannel::hasCellIndex,
+            SetChannel::new
+    );
+
+    public SetChannel(BlockPos pos, Integer cellIndex, int channel) {
+        this(pos, cellIndex != null ? cellIndex : -1, channel, cellIndex != null);
     }
 
-    public SetChannel(FriendlyByteBuf buffer)
-    {
-        this.pos= buffer.readBlockPos();
-        this.channel=buffer.readInt();
-        try {
-            this.cellIndex = buffer.readInt();
-        }catch (IndexOutOfBoundsException e){
-            this.cellIndex=null;
-        }
-    }
+    @Override
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
-    public void toBytes(FriendlyByteBuf buf)
-    {
-        buf.writeBlockPos(pos);
-        buf.writeInt(channel);
-        if (cellIndex!=null)
-            buf.writeInt(cellIndex);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-
-        ctx.get().enqueueWork(()-> {
-            BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(pos);
+    public static void handle(SetChannel pkt, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            BlockEntity blockEntity = ctx.player().level().getBlockEntity(pkt.pos());
             if (blockEntity instanceof AbstractWirelessEntity wirelessEntity)
-                wirelessEntity.setChannel(channel);
-            else if (cellIndex!=null && ModList.get().isLoaded("tinyredstone") && blockEntity instanceof PanelTile panelTile) {
-                PanelCellPos panelCellPos = PanelCellPos.fromIndex(panelTile,cellIndex);
+                wirelessEntity.setChannel(pkt.channel());
+            else if (pkt.hasCellIndex() && ModList.get().isLoaded("tinyredstone") && blockEntity instanceof PanelTile panelTile) {
+                PanelCellPos panelCellPos = PanelCellPos.fromIndex(panelTile, pkt.cellIndex());
                 if (panelCellPos.getIPanelCell() instanceof AbstractWirelessCell wirelessCell)
-                    wirelessCell.setChannel(channel);
+                    wirelessCell.setChannel(pkt.channel());
             }
-            ctx.get().setPacketHandled(true);
         });
-        return true;
     }
 }

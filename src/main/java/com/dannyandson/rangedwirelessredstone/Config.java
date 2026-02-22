@@ -1,17 +1,15 @@
 package com.dannyandson.rangedwirelessredstone;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Mod.EventBusSubscriber
 public class Config {
-    public static ForgeConfigSpec SERVER_CONFIG;
+    public static ModConfigSpec SERVER_CONFIG;
     public static final String CATEGORY_GENERAL = "balance";
-    public static ForgeConfigSpec.IntValue RANGE_BLOCK;
-    public static ForgeConfigSpec.IntValue RANGE_CELL;
+    public static ModConfigSpec.IntValue RANGE_BLOCK;
+    public static ModConfigSpec.IntValue RANGE_CELL;
 
     static {
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder SERVER_BUILDER = new ModConfigSpec.Builder();
 
         SERVER_BUILDER.comment("Balance Settings").push(CATEGORY_GENERAL);
         RANGE_BLOCK = SERVER_BUILDER.comment("Range of transmitter block. How many blocks should the signal travel in each direction?")

@@ -2,71 +2,50 @@ package com.dannyandson.rangedwirelessredstone.network;
 
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.tinyredstone.blocks.PanelTile;
-import com.dannyandson.tinyredstone.network.PanelCellSync;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid = RangedWirelessRedstone.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModNetworkHandler {
-    private static SimpleChannel INSTANCE;
-    private static int ID = 0;
-    private static final String PROTOCOL_VERSION = "1.2";
 
-    private static int nextID() {
-        return ID++;
-    }
+    @SubscribeEvent
+    public static void register(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(RangedWirelessRedstone.MODID).versioned("1.0");
 
-    public static void registerMessages() {
-        INSTANCE = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(RangedWirelessRedstone.MODID, "rangedwirelessredstone"),
-                () -> PROTOCOL_VERSION,
-                PROTOCOL_VERSION::equals,
-                PROTOCOL_VERSION::equals);
-
-        INSTANCE.messageBuilder(SetChannel.class,nextID())
-                .encoder(SetChannel::toBytes)
-                .decoder(SetChannel::new)
-                .consumerNetworkThread(SetChannel::handle)
-                .add();
-
-        INSTANCE.messageBuilder(ServerNetworkTrigger.class,nextID())
-                .encoder(ServerNetworkTrigger::toBytes)
-                .decoder(ServerNetworkTrigger::new)
-                .consumerNetworkThread(ServerNetworkTrigger::handle)
-                .add();
-
-        INSTANCE.messageBuilder(NetworkViewerTrigger.class,nextID())
-                .encoder(NetworkViewerTrigger::toBytes)
-                .decoder(NetworkViewerTrigger::new)
-                .consumerNetworkThread(NetworkViewerTrigger::handle)
-                .add();
-
-        if (ModList.get().isLoaded("tinyredstone")) {
-            INSTANCE.messageBuilder(PanelCellSync.class, nextID())
-                    .encoder(PanelCellSync::toBytes)
-                    .decoder(PanelCellSync::new)
-                    .consumerNetworkThread(PanelCellSync::handle)
-                    .add();
-        }
+        registrar.playToServer(SetChannel.TYPE, SetChannel.STREAM_CODEC, SetChannel::handle);
+        registrar.playToServer(ServerNetworkTrigger.TYPE, ServerNetworkTrigger.STREAM_CODEC, ServerNetworkTrigger::handle);
+        registrar.playToClient(NetworkViewerTrigger.TYPE, NetworkViewerTrigger.STREAM_CODEC, NetworkViewerTrigger::handle);
     }
 
     public static void sendToServer(Object packet) {
-        INSTANCE.sendToServer(packet);
+        if (packet instanceof SetChannel setChannel) {
+            PacketDistributor.sendToServer(setChannel);
+        } else if (packet instanceof ServerNetworkTrigger trigger) {
+            PacketDistributor.sendToServer(trigger);
+        }
     }
+
     public static void sendToClient(Object packet, ServerPlayer player) {
-        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        if (packet instanceof NetworkViewerTrigger trigger) {
+            PacketDistributor.sendToPlayer(player, trigger);
+        }
     }
 
     public static void sendToClient(Object packet, PanelTile panelTile) {
         BlockPos pos = panelTile.getBlockPos();
         for (Player player : panelTile.getLevel().players()) {
-            if (player instanceof ServerPlayer && player.distanceToSqr(pos.getX(),pos.getY(),pos.getZ()) < 64d) {
-                INSTANCE.sendTo(packet, ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+            if (player instanceof ServerPlayer serverPlayer && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64d) {
+                if (packet instanceof NetworkViewerTrigger trigger) {
+                    PacketDistributor.sendToPlayer(serverPlayer, trigger);
+                }
             }
         }
     }

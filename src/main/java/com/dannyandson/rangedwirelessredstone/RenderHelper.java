@@ -11,10 +11,10 @@ import org.joml.Matrix4f;
 
 public class RenderHelper {
 
-    public static TextureAtlasSprite SPRITE_PANEL_LIGHT = RenderHelper.getSprite(new ResourceLocation(RangedWirelessRedstone.MODID,"block/panel_blank"));
-    public static TextureAtlasSprite SPRITE_PANEL_DARK = RenderHelper.getSprite(new ResourceLocation(RangedWirelessRedstone.MODID,"block/panel_dark"));
-    public static TextureAtlasSprite SPRITE_PANEL_RED = RenderHelper.getSprite(new ResourceLocation(RangedWirelessRedstone.MODID,"block/panel_red"));
-    public static TextureAtlasSprite SPRITE_PANEL_DARKRED = RenderHelper.getSprite(new ResourceLocation(RangedWirelessRedstone.MODID,"block/panel_darkred"));
+    public static TextureAtlasSprite SPRITE_PANEL_LIGHT = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_blank"));
+    public static TextureAtlasSprite SPRITE_PANEL_DARK = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_dark"));
+    public static TextureAtlasSprite SPRITE_PANEL_RED = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_red"));
+    public static TextureAtlasSprite SPRITE_PANEL_DARKRED = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_darkred"));
 
 
     public static void drawQuarterSlab(PoseStack poseStack, VertexConsumer builder, TextureAtlasSprite sprite_top, TextureAtlasSprite sprite_side, int combinedLight, float alpha){
@@ -70,12 +70,11 @@ public class RenderHelper {
     }
 
     public static void add(VertexConsumer renderer, Matrix4f matrix4f, float x, float y, float z, float u, float v, int combinedLightIn, int color, float alpha) {
-        renderer.vertex(matrix4f, x, y, z)
-                .color(color >> 16 & 255,color >> 8 & 255, color & 255, (int)(alpha*255f))
-                .uv(u, v)
-                .uv2(combinedLightIn)
-                .normal(1, 0, 0)
-                .endVertex();
+        renderer.addVertex(matrix4f, x, y, z)
+                .setColor(color >> 16 & 255,color >> 8 & 255, color & 255, (int)(alpha*255f))
+                .setUv(u, v)
+                .setUv2(combinedLightIn & 0xFFFF, (combinedLightIn >> 16) & 0xFFFF)
+                .setNormal(1, 0, 0);
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation resourceLocation)

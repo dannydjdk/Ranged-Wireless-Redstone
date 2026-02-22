@@ -20,7 +20,7 @@ public class ChannelSelectGUI extends Screen {
     private final IWirelessComponent component;
     private ModWidget channelWidget;
 
-    private final ResourceLocation GUI = new ResourceLocation(RangedWirelessRedstone.MODID, "textures/gui/transparent.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "textures/gui/transparent.png");
 
     protected ChannelSelectGUI(IWirelessComponent component) {
         super(Component.translatable("rangedwirelessredstone:channelSelectGUI"));
@@ -83,15 +83,21 @@ public class ChannelSelectGUI extends Screen {
     }
 
     @Override
+    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float pt) {
+        // Override to prevent 1.21 blur effect - just darken
+        g.fill(0, 0, this.width, this.height, 0xC0101010);
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderTexture(0, GUI);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        this.minecraft.getTextureManager().bindForSetup(GUI);
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
         guiGraphics.blit(GUI, relX, relY, 0, 0, WIDTH, HEIGHT);
 
-        super.render(guiGraphics,mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
 
