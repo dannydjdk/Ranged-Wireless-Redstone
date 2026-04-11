@@ -5,14 +5,13 @@ import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
 import com.dannyandson.rangedwirelessredstone.network.ModNetworkHandler;
 import com.dannyandson.rangedwirelessredstone.network.ServerNetworkTrigger;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -22,7 +21,6 @@ public class NetworkViewerGUI extends Screen {
 
     private static final int WIDTH = 150;
     private static final int HEIGHT = 250;
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "textures/gui/transparent.png");
     private int relX = (this.width - WIDTH) / 2;
     private int relY = (this.height - HEIGHT) / 2;
 
@@ -41,21 +39,23 @@ public class NetworkViewerGUI extends Screen {
     protected void init() {
         relX = (this.width - WIDTH) / 2;
         relY = (this.height - HEIGHT) / 2;
-        addRenderableWidget(new ModWidget(relX - 1, relY - 1, WIDTH + 2, HEIGHT + 2, 0xAA000000));
-        addRenderableWidget(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
-        addRenderableWidget(new ModWidget(relX +4, relY + 15, WIDTH - 8, 1, 0xAA000000));
-        addRenderableWidget(new ModWidget(relX +4, relY + 15, 1, HEIGHT - 46, 0xAA222222));
-        addRenderableWidget(new ModWidget(relX +4, relY + 16 + HEIGHT - 48, WIDTH - 8, 1, 0xAAFFFFFF));
-        addRenderableWidget(new ModWidget(relX + 5 + WIDTH - 10, relY + 15, 1, HEIGHT - 46, 0xAADDDDDD));
-        addRenderableWidget(new ModWidget(relX+5, relY + 16, WIDTH - 10, HEIGHT - 48, 0x66888888));
 
-        addRenderableWidget(new ModWidget(relX + 5, relY + 5, WIDTH - 10, 12, Component.nullToEmpty("Transmitter xyz(i)")));
-        addRenderableWidget(new ModWidget(relX + 105, relY + 5, WIDTH - 10, 12, Component.nullToEmpty("Channel")));
+        // Visual-only widgets — render only, no input
+        addRenderableOnly(new ModWidget(relX - 1, relY - 1, WIDTH + 2, HEIGHT + 2, 0xAA000000));
+        addRenderableOnly(new ModWidget(relX, relY, WIDTH, HEIGHT, 0x88EEEEEE));
+        addRenderableOnly(new ModWidget(relX +4, relY + 15, WIDTH - 8, 1, 0xAA000000));
+        addRenderableOnly(new ModWidget(relX +4, relY + 15, 1, HEIGHT - 46, 0xAA222222));
+        addRenderableOnly(new ModWidget(relX +4, relY + 16 + HEIGHT - 48, WIDTH - 8, 1, 0xAAFFFFFF));
+        addRenderableOnly(new ModWidget(relX + 5 + WIDTH - 10, relY + 15, 1, HEIGHT - 46, 0xAADDDDDD));
+        addRenderableOnly(new ModWidget(relX+5, relY + 16, WIDTH - 10, HEIGHT - 48, 0x66888888));
+
+        addRenderableOnly(new ModWidget(relX + 5, relY + 5, WIDTH - 10, 12, Component.nullToEmpty("Transmitter xyz(i)")));
+        addRenderableOnly(new ModWidget(relX + 105, relY + 5, WIDTH - 10, 12, Component.nullToEmpty("Channel")));
 
         //create a sorted list
         Map<Integer, List<String>> networkList = new HashMap<>();
-        for (String key : networkNBT.getAllKeys()) {
-            int channel = networkNBT.getInt(key);
+        for (String key : networkNBT.keySet()) {
+            int channel = networkNBT.getIntOr(key, 0);
             if (!networkList.containsKey(channel))
                 networkList.put(channel, new ArrayList<>());
             networkList.get(channel).add(key);
@@ -77,9 +77,9 @@ public class NetworkViewerGUI extends Screen {
                 int range = isCell ? Config.RANGE_CELL.get() : Config.RANGE_BLOCK.get();
                 boolean inRange = (
                         queryBlock != null &&
-                        Math.abs(x - queryBlock.getX()) <= range &&
-                        Math.abs(y - queryBlock.getY()) <= range &&
-                        Math.abs(z - queryBlock.getZ()) <= range
+                                Math.abs(x - queryBlock.getX()) <= range &&
+                                Math.abs(y - queryBlock.getY()) <= range &&
+                                Math.abs(z - queryBlock.getZ()) <= range
                 );
                 channelList.add(index, channel.toString());
                 positionList.add(index, (inRange ? "✔" : "⁃ ") + posString);
@@ -90,7 +90,7 @@ public class NetworkViewerGUI extends Screen {
         setWidgetList();
 
         addRenderableWidget(ModWidget.buildButton(relX + WIDTH - 70, relY + HEIGHT - 25, 50, 20, Component.translatable("rangedwirelessredstone.gui.close"), button -> close()));
-        if(this.minecraft.player.hasPermissions(2))
+        if(this.minecraft.player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
             addRenderableWidget(ModWidget.buildButton(relX + 20, relY + HEIGHT - 25, 50, 20, Component.nullToEmpty("Clean Up"), button -> cleanUpNetwork()));
     }
 
@@ -106,7 +106,7 @@ public class NetworkViewerGUI extends Screen {
             wY += 10;
         }
         for(ModWidget modWidget : this.listWidgets) {
-            addRenderableWidget(modWidget);
+            addRenderableOnly(modWidget);
         }
     }
 
@@ -139,31 +139,11 @@ public class NetworkViewerGUI extends Screen {
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float pt) {
-        // Override to prevent 1.21 blur effect - just darken
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float pt) {
         g.fill(0, 0, this.width, this.height, 0xC0101010);
     }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderTexture(0, GUI);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        int relX = (this.width - WIDTH) / 2;
-        int relY = (this.height - HEIGHT) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, WIDTH, HEIGHT);
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
 
     public static void open(CompoundTag networkNBT) {
         Minecraft.getInstance().setScreen(new NetworkViewerGUI(networkNBT));
     }
-
 }

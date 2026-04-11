@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "rangedwirelessredstone:redstone_transmitter"
-    },
-    {
-      "tag": "c:silicon"
-    }
+    "rangedwirelessredstone:redstone_transmitter",
+    "#c:silicon"
   ],
   "result": {
     "id": "rangedwirelessredstone:tiny_redstone_transmitter",

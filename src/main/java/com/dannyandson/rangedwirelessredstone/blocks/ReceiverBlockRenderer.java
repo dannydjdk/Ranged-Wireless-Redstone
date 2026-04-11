@@ -4,28 +4,49 @@ import com.dannyandson.rangedwirelessredstone.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 
-public class ReceiverBlockRenderer  implements BlockEntityRenderer<ReceiverBlockEntity> {
+import org.jspecify.annotations.Nullable;
+
+public class ReceiverBlockRenderer implements BlockEntityRenderer<ReceiverBlockEntity, ReceiverRenderState> {
 
     public ReceiverBlockRenderer(BlockEntityRendererProvider.Context context){}
 
     @Override
-    public void render(ReceiverBlockEntity receiverBlockEntity, float p_112308_, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public ReceiverRenderState createRenderState() {
+        return new ReceiverRenderState();
+    }
 
-        Direction facing = receiverBlockEntity.getBlockState().getValue(BlockStateProperties.FACING);
+    @Override
+    public void extractRenderState(ReceiverBlockEntity be, ReceiverRenderState state, float partialTick,
+                                   Vec3 cameraPos,
+                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTick, cameraPos, crumblingOverlay);
+        state.hasSignal = (be.getStrongSignal() + be.getWeakSignal() > 0);
+        state.facing = be.getBlockState().getValue(BlockStateProperties.FACING);
+    }
 
-        boolean signal = (receiverBlockEntity.getStrongSignal() + receiverBlockEntity.getWeakSignal() > 0);
+    @Override
+    public void submit(ReceiverRenderState state, PoseStack poseStack,
+                       SubmitNodeCollector collector, CameraRenderState camera) {
+
+        Direction facing = state.facing;
+        boolean signal = state.hasSignal;
         TextureAtlasSprite sprite = (signal) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
-        VertexConsumer builder = buffer.getBuffer(RenderType.solid());
-        if (signal)
-            combinedLight = 15728880;
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer builder = bufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        int combinedLight = signal ? 15728880 : state.lightCoords;
 
         poseStack.pushPose();
         if (facing == Direction.WEST) {
@@ -65,9 +86,6 @@ public class ReceiverBlockRenderer  implements BlockEntityRenderer<ReceiverBlock
         RenderHelper.drawRectangle(builder, poseStack, 0.25f, 0.3125f, 0.75f, 0.8125f, sprite, combinedLight, 1.0f);
         RenderHelper.drawRectangle(builder, poseStack, 0.25f, 0.3125f, 0.1875f, 0.25f, sprite, combinedLight, 1.0f);
 
-
         poseStack.popPose();
-
     }
-
 }

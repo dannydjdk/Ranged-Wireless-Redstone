@@ -1,7 +1,7 @@
 package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.logic.ChannelData;
-import com.dannyandson.rangedwirelessredstone.setup.Registration;
+import com.dannyandson.rangedwirelessredstone.setup.ModRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class ReceiverBlockEntity extends AbstractWirelessEntity {
 
     public ReceiverBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(Registration.RECEIVER_BLOCK_ENTITY.get(), blockPos, blockState);
+        super(ModRegistration.RECEIVER_BLOCK_ENTITY.get(), blockPos, blockState);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ReceiverBlockEntity extends AbstractWirelessEntity {
                 BlockPos neighborPos = worldPosition.relative(dir);
                 BlockState neighborBlockState = level.getBlockState(neighborPos);
                 if (!neighborBlockState.isAir())
-                    this.level.updateNeighborsAtExceptFromFacing(neighborPos,neighborBlockState.getBlock(),dir.getOpposite());
+                    this.level.updateNeighborsAtExceptFromFacing(neighborPos,neighborBlockState.getBlock(),dir.getOpposite(),null);
             }
         }
     }

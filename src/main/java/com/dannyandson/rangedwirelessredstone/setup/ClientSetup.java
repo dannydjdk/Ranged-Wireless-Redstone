@@ -9,18 +9,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@SuppressWarnings("removal")
-@EventBusSubscriber(modid = RangedWirelessRedstone.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = RangedWirelessRedstone.MODID, value = Dist.CLIENT)
 public class ClientSetup {
 
     public static void init(final FMLClientSetupEvent event) {
-        // No longer needed for render layer registration in 1.21
     }
 
     @SubscribeEvent
     public static void onRegisterRenderer(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(Registration.RECEIVER_BLOCK_ENTITY.get(), ReceiverBlockRenderer::new);
-        event.registerBlockEntityRenderer(Registration.TRANSMITTER_BLOCK_ENTITY.get(), TransmitterBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModRegistration.RECEIVER_BLOCK_ENTITY.get(), ReceiverBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModRegistration.TRANSMITTER_BLOCK_ENTITY.get(), TransmitterBlockRenderer::new);
     }
 
 }

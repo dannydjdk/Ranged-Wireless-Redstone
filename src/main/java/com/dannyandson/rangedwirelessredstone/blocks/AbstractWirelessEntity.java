@@ -9,8 +9,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractWirelessEntity  extends BlockEntity implements IWirelessComponent {
 
@@ -39,7 +41,7 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
 
     protected void sync()
     {
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             this.level.sendBlockUpdated(worldPosition,this.getBlockState(),this.getBlockState(), Block.UPDATE_CLIENTS);
         this.setChanged();
     }
@@ -55,28 +57,24 @@ public abstract class AbstractWirelessEntity  extends BlockEntity implements IWi
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    // onDataPacket removed - NeoForge handles sync automatically
-
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag nbt = new CompoundTag();
-        this.saveAdditional(nbt, registries);
-        return nbt;
+        return this.saveWithoutMetadata(registries);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.strongSignal = nbt.getInt("signal");
-        this.weakSignal = nbt.getInt("weaksignal");
-        this.channel = nbt.getInt("channel");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.strongSignal = input.getIntOr("signal", 0);
+        this.weakSignal = input.getIntOr("weaksignal", 0);
+        this.channel = input.getIntOr("channel", 0);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.putInt("signal", this.strongSignal);
-        nbt.putInt("weaksignal", this.weakSignal);
-        nbt.putInt("channel", this.channel);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("signal", this.strongSignal);
+        output.putInt("weaksignal", this.weakSignal);
+        output.putInt("channel", this.channel);
     }
 }

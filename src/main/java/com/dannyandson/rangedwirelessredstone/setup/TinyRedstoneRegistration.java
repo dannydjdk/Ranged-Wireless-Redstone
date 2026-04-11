@@ -5,12 +5,11 @@ import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.Transmitt
 import com.dannyandson.rangedwirelessredstone.items.WirelessPanelCellItem;
 import com.dannyandson.tinyredstone.TinyRedstone;
 import net.minecraft.world.item.Item;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 public class TinyRedstoneRegistration {
-    public static final Supplier<Item> TINY_TRANSMITTER_ITEM = Registration.ITEMS.register("tiny_redstone_transmitter", WirelessPanelCellItem::new);
-    public static final Supplier<Item> TINY_RECEIVER_ITEM = Registration.ITEMS.register("tiny_redstone_receiver", WirelessPanelCellItem::new);
+    public static final DeferredItem<Item> TINY_TRANSMITTER_ITEM = ModRegistration.ITEMS.registerItem("tiny_redstone_transmitter", WirelessPanelCellItem::new);
+    public static final DeferredItem<Item> TINY_RECEIVER_ITEM = ModRegistration.ITEMS.registerItem("tiny_redstone_receiver", WirelessPanelCellItem::new);
 
     public static void register(){}
 

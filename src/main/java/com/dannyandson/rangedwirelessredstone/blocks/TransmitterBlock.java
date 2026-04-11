@@ -14,19 +14,19 @@ import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TransmitterBlock extends BaseEntityBlock {
 
-    public static final MapCodec<TransmitterBlock> CODEC = simpleCodec(p -> new TransmitterBlock());
+    public static final MapCodec<TransmitterBlock> CODEC = simpleCodec(TransmitterBlock::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
@@ -41,11 +41,8 @@ public class TransmitterBlock extends BaseEntityBlock {
                     Block.box(7,2,7,9,14,9)
     );
 
-    public TransmitterBlock() {
-        super(
-                Properties.of()
-                        .sound(SoundType.STONE)
-                        .strength(2.0f));
+    public TransmitterBlock(Properties props) {
+        super(props);
     }
 
     @Nullable
@@ -64,7 +61,6 @@ public class TransmitterBlock extends BaseEntityBlock {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity) {
@@ -76,18 +72,14 @@ public class TransmitterBlock extends BaseEntityBlock {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos pos, BlockState p_60518_, boolean p_60519_) {
-        if (level instanceof ServerLevel serverLevel){
-            ChannelData.getChannelData(serverLevel).removeTransmitter(pos);
-        }
-            super.onRemove(blockState, level, pos, p_60518_, p_60519_);
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos pos, boolean isMoving) {
+        ChannelData.getChannelData(level).removeTransmitter(pos);
+        super.affectNeighborsAfterRemoval(blockState, level, pos, isMoving);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
+    public void neighborChanged(BlockState blockState, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
         if (level.getBlockEntity(pos) instanceof TransmitterBlockEntity transmitterEntity){
             if (level instanceof ServerLevel) {
                 int direct = level.getDirectSignalTo(pos);
@@ -95,12 +87,12 @@ public class TransmitterBlock extends BaseEntityBlock {
                 transmitterEntity.setSignals(indirect, direct);
             }
         }else{
-            super.neighborChanged(blockState,level,pos,block,neighborPos,isMoving);
+            super.neighborChanged(blockState,level,pos,block,orientation,isMoving);
         }
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @org.jetbrains.annotations.Nullable Direction direction) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction direction) {
         return true;
     }
 

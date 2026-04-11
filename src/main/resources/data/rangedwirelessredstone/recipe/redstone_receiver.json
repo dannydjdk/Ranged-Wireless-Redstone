@@ -6,15 +6,9 @@
     "STS"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:smooth_stone_slab"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "item": "minecraft:redstone_torch"
-    }
+    "S": "minecraft:smooth_stone_slab",
+    "R": "minecraft:redstone",
+    "T": "minecraft:redstone_torch"
   },
   "result": {
     "id": "rangedwirelessredstone:redstone_receiver",

@@ -8,7 +8,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +21,7 @@ public class TransmitterCell extends AbstractWirelessCell {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float alpha) {
-        VertexConsumer builder = buffer.getBuffer((alpha==1.0)? RenderType.solid():RenderType.translucent());
+        VertexConsumer builder = buffer.getBuffer((alpha==1.0)? Sheets.cutoutBlockSheet():RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS));
         boolean hasSignal = this.getStrongSignal()+this.getWeakSignal()>0;
         TextureAtlasSprite redsprite = (hasSignal)?RenderHelper.SPRITE_PANEL_RED:RenderHelper.SPRITE_PANEL_DARKRED;
         int redCombinedLight = (hasSignal)?15728880:combinedLight;

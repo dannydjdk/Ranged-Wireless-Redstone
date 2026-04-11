@@ -10,6 +10,5 @@ public class ModSetup {
         // register everything
         if (ModList.get().isLoaded("tinyredstone"))
             TinyRedstoneRegistration.registerPanelCells();
-        // Network registration is now handled by @SubscribeEvent in ModNetworkHandler
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record ServerNetworkTrigger(int triggerOrdinal) implements CustomPacketPayload {
 
     public static final Type<ServerNetworkTrigger> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "server_network_trigger"));
+            new Type<>(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "server_network_trigger"));
 
     public static final StreamCodec<ByteBuf, ServerNetworkTrigger> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, ServerNetworkTrigger::triggerOrdinal,

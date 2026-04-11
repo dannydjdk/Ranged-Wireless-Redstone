@@ -1,6 +1,9 @@
 package com.dannyandson.rangedwirelessredstone.network;
 
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -8,8 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@SuppressWarnings("removal")
-@EventBusSubscriber(modid = RangedWirelessRedstone.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = RangedWirelessRedstone.MODID)
 public class ModNetworkHandler {
 
     @SubscribeEvent
@@ -21,11 +23,10 @@ public class ModNetworkHandler {
         registrar.playToClient(NetworkViewerTrigger.TYPE, NetworkViewerTrigger.STREAM_CODEC, NetworkViewerTrigger::handle);
     }
 
-    public static void sendToServer(Object packet) {
-        if (packet instanceof SetChannel setChannel) {
-            PacketDistributor.sendToServer(setChannel);
-        } else if (packet instanceof ServerNetworkTrigger trigger) {
-            PacketDistributor.sendToServer(trigger);
+    public static void sendToServer(CustomPacketPayload payload) {
+        var connection = Minecraft.getInstance().getConnection();
+        if (connection != null) {
+            connection.send(new ServerboundCustomPayloadPacket(payload));
         }
     }
 

@@ -14,7 +14,6 @@ import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,13 +25,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ReceiverBlock extends BaseEntityBlock {
 
-    public static final MapCodec<ReceiverBlock> CODEC = simpleCodec(p -> new ReceiverBlock());
+    public static final MapCodec<ReceiverBlock> CODEC = simpleCodec(ReceiverBlock::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
@@ -57,11 +56,8 @@ public class ReceiverBlock extends BaseEntityBlock {
         shapeMap.put(Direction.WEST,rotateShape(Direction.WEST));
     }
 
-    public ReceiverBlock() {
-        super(
-                Properties.of()
-                        .sound(SoundType.STONE)
-                        .strength(2.0f));
+    public ReceiverBlock(Properties props) {
+        super(props);
     }
 
     @Nullable
@@ -90,23 +86,16 @@ public class ReceiverBlock extends BaseEntityBlock {
         return defaultBlockState().setValue(BlockStateProperties.FACING, context.getHorizontalDirection());
     }
 
-    /**
-     * Called to determine whether to allow the block to handle its own indirect power rather than using the default rules.
-     * @return Whether Block#isProvidingWeakPower should be called when determining indirect power
-     */
     @Override
     public boolean shouldCheckWeakPower(BlockState state, SignalGetter world, BlockPos pos, Direction directionFromNeighborToThis) {
-        //returning false to override default behavior to prevent redstone to allow block entity to determine output
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean isSignalSource(BlockState p_60571_) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public int getDirectSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
         if (blockGetter.getBlockEntity(pos) instanceof IWirelessComponent component) {
@@ -115,7 +104,6 @@ public class ReceiverBlock extends BaseEntityBlock {
         return super.getDirectSignal(blockState, blockGetter, pos, direction);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
         if (blockGetter.getBlockEntity(pos) instanceof IWirelessComponent component) {
@@ -125,7 +113,7 @@ public class ReceiverBlock extends BaseEntityBlock {
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @org.jetbrains.annotations.Nullable Direction direction) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction direction) {
         return true;
     }
 

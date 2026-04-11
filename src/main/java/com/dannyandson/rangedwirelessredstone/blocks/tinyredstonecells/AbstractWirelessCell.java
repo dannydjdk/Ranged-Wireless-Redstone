@@ -44,9 +44,9 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
 
     @Override
     public void readNBT(CompoundTag compoundTag) {
-        strongSignal =compoundTag.getInt("signal");
-        weakSignal =compoundTag.getInt("weaksignal");
-        channel=compoundTag.getInt("channel");
+        strongSignal = compoundTag.getIntOr("signal", 0);
+        weakSignal = compoundTag.getIntOr("weaksignal", 0);
+        channel = compoundTag.getIntOr("channel", 0);
     }
 
     @Override
@@ -83,7 +83,7 @@ public abstract class AbstractWirelessCell implements IWirelessComponent, IPanel
     @Override
     public void setChannel(int channel) {
         this.channel = channel;
-        if (panelCellPos!=null && !panelCellPos.getPanelTile().getLevel().isClientSide)
+        if (panelCellPos!=null && !panelCellPos.getPanelTile().getLevel().isClientSide())
             TinyRedstoneHelper.sendPanelCellSyncToNearby(
                     panelCellPos.getPanelTile(),
                     new PanelCellSync(panelCellPos.getPanelTile().getBlockPos(), panelCellPos.getIndex(), writeNBT())

@@ -1,8 +1,7 @@
 package com.dannyandson.rangedwirelessredstone;
 
-import com.dannyandson.rangedwirelessredstone.compat.CompatHandler;
 import com.dannyandson.rangedwirelessredstone.setup.ClientSetup;
-import com.dannyandson.rangedwirelessredstone.setup.Registration;
+import com.dannyandson.rangedwirelessredstone.setup.ModRegistration;
 import com.dannyandson.rangedwirelessredstone.setup.ModSetup;
 import com.dannyandson.rangedwirelessredstone.setup.TinyRedstoneRegistration;
 import net.neoforged.bus.api.IEventBus;
@@ -26,20 +25,18 @@ public class RangedWirelessRedstone
 
         if (ModList.get().isLoaded("tinyredstone"))
             TinyRedstoneRegistration.register();
-        Registration.register(modEventBus);
+        ModRegistration.register(modEventBus);
 
         // Register the setup method for modloading
         modEventBus.addListener(ModSetup::init);
 
-        if(FMLEnvironment.dist.isClient()) {
+        if(FMLEnvironment.getDist().isClient()) {
             modEventBus.addListener(ClientSetup::init);
         }
 
         //load configs
         modContainer.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
 
-        CompatHandler.register();
+        // Note: TheOneProbe compat excluded from build until TOP is available for 26.1
     }
-
-
 }

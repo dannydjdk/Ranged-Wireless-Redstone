@@ -4,17 +4,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 
 public class RenderHelper {
 
-    public static TextureAtlasSprite SPRITE_PANEL_LIGHT = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_blank"));
-    public static TextureAtlasSprite SPRITE_PANEL_DARK = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_dark"));
-    public static TextureAtlasSprite SPRITE_PANEL_RED = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_red"));
-    public static TextureAtlasSprite SPRITE_PANEL_DARKRED = RenderHelper.getSprite(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_darkred"));
+    public static TextureAtlasSprite SPRITE_PANEL_LIGHT = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_blank"));
+    public static TextureAtlasSprite SPRITE_PANEL_DARK = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_dark"));
+    public static TextureAtlasSprite SPRITE_PANEL_RED = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_red"));
+    public static TextureAtlasSprite SPRITE_PANEL_DARKRED = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_darkred"));
 
 
     public static void drawQuarterSlab(PoseStack poseStack, VertexConsumer builder, TextureAtlasSprite sprite_top, TextureAtlasSprite sprite_side, int combinedLight, float alpha){
@@ -73,14 +74,13 @@ public class RenderHelper {
         renderer.addVertex(matrix4f, x, y, z)
                 .setColor(color >> 16 & 255,color >> 8 & 255, color & 255, (int)(alpha*255f))
                 .setUv(u, v)
+                .setUv1(0, 10)
                 .setUv2(combinedLightIn & 0xFFFF, (combinedLightIn >> 16) & 0xFFFF)
-                .setNormal(1, 0, 0);
+                .setNormal(0f, 1f, 0f);
     }
 
-    public static TextureAtlasSprite getSprite(ResourceLocation resourceLocation)
+    public static TextureAtlasSprite getSprite(Identifier identifier)
     {
-        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(resourceLocation);
+        return Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, identifier));
     }
-
-
 }

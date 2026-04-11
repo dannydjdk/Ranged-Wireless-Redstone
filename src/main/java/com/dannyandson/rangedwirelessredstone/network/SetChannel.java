@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record SetChannel(BlockPos pos, int cellIndex, int channel, boolean hasCellIndex) implements CustomPacketPayload {
 
     public static final Type<SetChannel> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "set_channel"));
+            new Type<>(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID, "set_channel"));
 
     public static final StreamCodec<ByteBuf, SetChannel> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, SetChannel::pos,

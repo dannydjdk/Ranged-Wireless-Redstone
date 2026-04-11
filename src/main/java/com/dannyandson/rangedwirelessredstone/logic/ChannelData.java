@@ -4,16 +4,19 @@ import com.dannyandson.rangedwirelessredstone.Config;
 import com.dannyandson.rangedwirelessredstone.RangedWirelessRedstone;
 import com.dannyandson.rangedwirelessredstone.blocks.TransmitterBlockEntity;
 import com.dannyandson.rangedwirelessredstone.blocks.tinyredstonecells.TinyRedstoneHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.fml.ModList;
 
-import javax.annotation.CheckForNull;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 public class ChannelData {
@@ -30,10 +33,7 @@ public class ChannelData {
     private final ChannelSaveData saveData;
 
     private ChannelData(ServerLevel level) {
-        this.saveData = level.getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(ChannelSaveData::new, ChannelSaveData::load),
-                RangedWirelessRedstone.MODID
-        );
+        this.saveData = level.getDataStorage().computeIfAbsent(ChannelSaveData.TYPE);
     }
 
     public void setTransmitterChannel(BlockPos pos, int channel) {
@@ -141,8 +141,8 @@ public class ChannelData {
     }
 
     public CompoundTag getChannelNBT() {
-        CompoundTag nbt = saveData.save(new CompoundTag(), null);
-        return nbt.getCompound("channeldata");
+        CompoundTag fullTag = saveData.saveToTag();
+        return fullTag.getCompound("channeldata").orElseGet(CompoundTag::new);
     }
 
     public static int[] getXYZiFromPosString(String pos) {
@@ -158,27 +158,42 @@ public class ChannelData {
         public Map<String, Integer> weakSignalMap = new HashMap<>();
         public Map<String, Integer> strongSignalMap = new HashMap<>();
 
+        // Codec for SavedDataType — serializes all data via a CompoundTag wrapper
+        public static final Codec<ChannelSaveData> CODEC = RecordCodecBuilder.<ChannelSaveData>mapCodec(instance ->
+                instance.group(
+                        CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag())
+                                .forGetter(ChannelSaveData::saveToTag)
+                ).apply(instance, ChannelSaveData::loadFromTag)
+        ).codec();
+
+        public static final SavedDataType<ChannelSaveData> TYPE = new SavedDataType<>(
+                Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID, RangedWirelessRedstone.MODID),
+                ChannelSaveData::new,
+                CODEC,
+                null
+        );
+
         public ChannelSaveData() {
         }
 
-        public static ChannelSaveData load(CompoundTag nbt, HolderLookup.Provider registries) {
+        public static ChannelSaveData loadFromTag(CompoundTag nbt) {
             ChannelSaveData data = new ChannelSaveData();
-            CompoundTag channelData = nbt.getCompound("channeldata");
-            CompoundTag signalData = nbt.getCompound("signaldata");
-            CompoundTag weakSignalData = nbt.getCompound("weaksignaldata");
-            for (String key : channelData.getAllKeys()) {
-                int channel = channelData.getInt(key);
+            CompoundTag channelData = nbt.getCompound("channeldata").orElseGet(CompoundTag::new);
+            CompoundTag signalData = nbt.getCompound("signaldata").orElseGet(CompoundTag::new);
+            CompoundTag weakSignalData = nbt.getCompound("weaksignaldata").orElseGet(CompoundTag::new);
+            for (String key : channelData.keySet()) {
+                int channel = channelData.getIntOr(key, 0);
                 if (!data.channelPosMap.containsKey(channel))
                     data.channelPosMap.put(channel, new ArrayList<>());
                 data.channelPosMap.get(channel).add(key);
-                data.strongSignalMap.put(key, signalData.getInt(key));
-                data.weakSignalMap.put(key, weakSignalData.getInt(key));
+                data.strongSignalMap.put(key, signalData.getIntOr(key, 0));
+                data.weakSignalMap.put(key, weakSignalData.getIntOr(key, 0));
             }
             return data;
         }
 
-        @Override
-        public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
+        public CompoundTag saveToTag() {
+            CompoundTag nbt = new CompoundTag();
             CompoundTag channelData = new CompoundTag(),
                     strongSignalData = new CompoundTag(),
                     weakSignalData = new CompoundTag();
@@ -212,7 +227,7 @@ public class ChannelData {
             channelPosMap.get(channel).add(pos);
         }
 
-        @CheckForNull
+        @Nullable
         public Integer getTransmitterChannel(String pos) {
             for (Map.Entry<Integer, List<String>> entry : channelPosMap.entrySet()) {
                 if (entry.getValue().contains(pos))
