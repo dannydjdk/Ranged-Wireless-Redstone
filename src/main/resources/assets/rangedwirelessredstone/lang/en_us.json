@@ -12,5 +12,6 @@
 
   "rangedwirelessredstone.gui.channel": "Set Channel",
   "rangedwirelessredstone.gui.close": "Close",
-  "rangedwirelessredstone.tooltip.press_shift": "--Press Shift for More Info--"
+  "rangedwirelessredstone.tooltip.press_shift": "--Press Shift for More Info--",
+  "config.jade.plugin_rangedwirelessredstone.wireless_block": "Wireless Redstone"
 }
