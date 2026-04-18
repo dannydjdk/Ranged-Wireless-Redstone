@@ -30,10 +30,10 @@ public class ModRegistration {
     //BLOCKS
     public static final DeferredBlock<TransmitterBlock> TRANSMITTER_BLOCK = BLOCKS.registerBlock("redstone_transmitter",
             TransmitterBlock::new,
-            BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f));
+            prop->prop.sound(SoundType.STONE).strength(2.0f));
     public static final DeferredBlock<ReceiverBlock> RECEIVER_BLOCK = BLOCKS.registerBlock("redstone_receiver",
             ReceiverBlock::new,
-            BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f));
+            prop->prop.sound(SoundType.STONE).strength(2.0f));
 
     //BLOCK ENTITIES
     public static final Supplier<BlockEntityType<TransmitterBlockEntity>> TRANSMITTER_BLOCK_ENTITY =
