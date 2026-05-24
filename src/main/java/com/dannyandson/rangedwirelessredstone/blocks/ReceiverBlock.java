@@ -61,7 +61,8 @@ public class ReceiverBlock extends BaseEntityBlock {
         super(
                 Properties.of()
                         .sound(SoundType.STONE)
-                        .strength(2.0f));
+                        .strength(2.0f)
+                        .forceSolidOn());
     }
 
     @Nullable
