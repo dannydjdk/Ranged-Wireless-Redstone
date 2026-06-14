@@ -42,7 +42,7 @@ public class TransmitterBlock extends BaseEntityBlock {
     );
 
     public TransmitterBlock(Properties props) {
-        super(props);
+        super(props.forceSolidOn());
     }
 
     @Nullable
