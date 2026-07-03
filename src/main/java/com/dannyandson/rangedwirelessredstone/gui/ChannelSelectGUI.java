@@ -50,7 +50,7 @@ public class ChannelSelectGUI extends Screen {
     }
 
     private void close() {
-        minecraft.setScreen(null);
+        minecraft.gui.setScreen(null);
     }
 
     private void changeChannel(int change)
@@ -79,6 +79,6 @@ public class ChannelSelectGUI extends Screen {
     }
 
     public static void open(IWirelessComponent component) {
-        Minecraft.getInstance().setScreen(new ChannelSelectGUI(component));
+        Minecraft.getInstance().gui.setScreen(new ChannelSelectGUI(component));
     }
 }

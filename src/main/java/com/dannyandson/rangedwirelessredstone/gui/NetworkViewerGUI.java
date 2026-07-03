@@ -129,7 +129,7 @@ public class NetworkViewerGUI extends Screen {
     }
 
     private void close() {
-        minecraft.setScreen(null);
+        minecraft.gui.setScreen(null);
     }
 
     private void cleanUpNetwork()
@@ -144,6 +144,6 @@ public class NetworkViewerGUI extends Screen {
     }
 
     public static void open(CompoundTag networkNBT) {
-        Minecraft.getInstance().setScreen(new NetworkViewerGUI(networkNBT));
+        Minecraft.getInstance().gui.setScreen(new NetworkViewerGUI(networkNBT));
     }
 }

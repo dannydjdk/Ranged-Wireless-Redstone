@@ -2,11 +2,7 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -40,31 +36,30 @@ public class TransmitterBlockRenderer implements BlockEntityRenderer<Transmitter
 
         boolean signal = state.hasSignal;
         TextureAtlasSprite sprite = (signal) ? RenderHelper.SPRITE_PANEL_RED : RenderHelper.SPRITE_PANEL_DARKRED;
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer builder = bufferSource.getBuffer(Sheets.cutoutBlockSheet());
         int combinedLight = signal ? 15728880 : state.lightCoords;
 
-        poseStack.pushPose();
+        collector.submitCustomGeometry(poseStack, RenderHelper.blockCutoutRenderType(), (pose, builder) -> {
+            PoseStack ps = new PoseStack();
+            ps.last().pose().mul(pose.pose());
 
-        poseStack.translate(0, 0, .5625);
-        RenderHelper.drawRectangle(builder, poseStack, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
+            ps.translate(0, 0, .5625);
+            RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        poseStack.translate(-.4375, 0, .5625);
-        RenderHelper.drawRectangle(builder, poseStack, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
+            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.translate(-.4375, 0, .5625);
+            RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        poseStack.translate(-.4375, 0, .5625);
-        RenderHelper.drawRectangle(builder, poseStack, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
+            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.translate(-.4375, 0, .5625);
+            RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        poseStack.translate(-.4375, 0, .5625);
-        RenderHelper.drawRectangle(builder, poseStack, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
+            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.translate(-.4375, 0, .5625);
+            RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-        poseStack.translate(0,-.4375,0.875);
-        RenderHelper.drawRectangle(builder, poseStack, 0.4375f, 0.5625f,0.4375f, 0.5625f, sprite, combinedLight, 1.0f);
-
-        poseStack.popPose();
+            ps.mulPose(Axis.XP.rotationDegrees(-90));
+            ps.translate(0, -.4375, 0.875);
+            RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.4375f, 0.5625f, sprite, combinedLight, 1.0f);
+        });
     }
 }

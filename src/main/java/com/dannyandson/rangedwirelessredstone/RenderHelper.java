@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
@@ -16,6 +18,15 @@ public class RenderHelper {
     public static TextureAtlasSprite SPRITE_PANEL_DARK = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_dark"));
     public static TextureAtlasSprite SPRITE_PANEL_RED = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_red"));
     public static TextureAtlasSprite SPRITE_PANEL_DARKRED = RenderHelper.getSprite(Identifier.fromNamespaceAndPath(RangedWirelessRedstone.MODID,"block/panel_darkred"));
+
+    private static RenderType blockCutout;
+
+    // Cull-cutout block render type (26.1 Sheets.cutoutBlockSheet equivalent). Built lazily; never a static final (client-only, would crash a dedicated server on class load).
+    public static RenderType blockCutoutRenderType() {
+        if (blockCutout == null)
+            blockCutout = RenderTypes.entityCutoutCull(TextureAtlas.LOCATION_BLOCKS);
+        return blockCutout;
+    }
 
 
     public static void drawQuarterSlab(PoseStack poseStack, VertexConsumer builder, TextureAtlasSprite sprite_top, TextureAtlasSprite sprite_side, int combinedLight, float alpha){
