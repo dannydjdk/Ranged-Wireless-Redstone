@@ -34,7 +34,7 @@ public class TransmitterCell extends AbstractWirelessCell {
         RenderHelper.drawRectangle(builder,poseStack,.4375f,.5625f,.4375f,.5625f,redsprite,redCombinedLight,combinedOverlay);
         poseStack.popPose();
 
-        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        poseStack.rotate(Axis.XP.rotationDegrees(90));
 
         poseStack.pushPose();
         poseStack.translate(0,0,-.25);
@@ -42,19 +42,19 @@ public class TransmitterCell extends AbstractWirelessCell {
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.rotate(Axis.YP.rotationDegrees(90));
         poseStack.translate(0,0,.75);
         drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(180));
+        poseStack.rotate(Axis.YP.rotationDegrees(180));
         poseStack.translate(-1,0,.75);
         drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(270));
+        poseStack.rotate(Axis.YP.rotationDegrees(270));
         poseStack.translate(-1,0,-.25);
         drawSide(poseStack,builder,redsprite,combinedLight,combinedOverlay,redCombinedLight);
         poseStack.popPose();

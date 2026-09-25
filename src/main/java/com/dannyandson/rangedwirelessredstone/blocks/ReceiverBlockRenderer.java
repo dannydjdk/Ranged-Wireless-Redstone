@@ -47,13 +47,13 @@ public class ReceiverBlockRenderer implements BlockEntityRenderer<ReceiverBlockE
             ps.last().pose().mul(pose.pose());
 
             if (facing == Direction.WEST) {
-                ps.mulPose(Axis.YP.rotationDegrees(90));
+                ps.rotate(Axis.YP.rotationDegrees(90));
                 ps.translate(-1, 0, 0);
             } else if (facing == Direction.SOUTH) {
-                ps.mulPose(Axis.YP.rotationDegrees(180));
+                ps.rotate(Axis.YP.rotationDegrees(180));
                 ps.translate(-1, 0, -1);
             } else if (facing == Direction.EAST) {
-                ps.mulPose(Axis.YP.rotationDegrees(-90));
+                ps.rotate(Axis.YP.rotationDegrees(-90));
                 ps.translate(0, 0, -1);
             }
             ps.translate(0, 0, .3125);
@@ -61,24 +61,24 @@ public class ReceiverBlockRenderer implements BlockEntityRenderer<ReceiverBlockE
             RenderHelper.drawRectangle(builder, ps, 0.1875f, 0.25f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
             RenderHelper.drawRectangle(builder, ps, 0.75f, 0.8125f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.6875, 0, 0.25f);
             RenderHelper.drawRectangle(builder, ps, 0.6875f, 0.75f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
             ps.translate(0, 0, 0.5625f);
             RenderHelper.drawRectangle(builder, ps, 0.6875f, 0.75f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.1875, 0, .75);
             RenderHelper.drawRectangle(builder, ps, 0.1875f, 0.25f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
             RenderHelper.drawRectangle(builder, ps, 0.75f, 0.8125f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.25, 0, .25);
             RenderHelper.drawRectangle(builder, ps, 0.25f, 0.3125f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
             ps.translate(0, 0, 0.5625);
             RenderHelper.drawRectangle(builder, ps, 0.25f, 0.3125f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.XP.rotationDegrees(-90));
+            ps.rotate(Axis.XP.rotationDegrees(-90));
             ps.translate(0, -.1875, 0.875);
             RenderHelper.drawRectangle(builder, ps, 0.25f, 0.3125f, 0.75f, 0.8125f, sprite, combinedLight, 1.0f);
             RenderHelper.drawRectangle(builder, ps, 0.25f, 0.3125f, 0.1875f, 0.25f, sprite, combinedLight, 1.0f);

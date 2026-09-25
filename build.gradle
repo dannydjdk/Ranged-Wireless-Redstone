@@ -2,7 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.141'
+    id 'net.neoforged.moddev' version '2.0.147'
 }
 
 version = mod_version
@@ -55,10 +55,10 @@ repositories {
 }
 
 dependencies {
-    implementation "curse.maven:tiny-redstone-453746:8355742"
+    implementation "curse.maven:tiny-redstone-453746:8968085"
 
-    implementation "curse.maven:jei-238222:8352845"
-    implementation "curse.maven:jade-324717:8326243"
+    implementation "curse.maven:jei-238222:8941416"
+    implementation "curse.maven:jade-324717:8892782"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

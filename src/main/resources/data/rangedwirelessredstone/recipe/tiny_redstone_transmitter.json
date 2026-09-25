@@ -1,4 +1,7 @@
 {
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "tinyredstone" }
+  ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     "rangedwirelessredstone:redstone_transmitter",

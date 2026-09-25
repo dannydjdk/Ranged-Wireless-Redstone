@@ -45,19 +45,19 @@ public class TransmitterBlockRenderer implements BlockEntityRenderer<Transmitter
             ps.translate(0, 0, .5625);
             RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.4375, 0, .5625);
             RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.4375, 0, .5625);
             RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.YP.rotationDegrees(90));
+            ps.rotate(Axis.YP.rotationDegrees(90));
             ps.translate(-.4375, 0, .5625);
             RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.75f, 0.875f, sprite, combinedLight, 1.0f);
 
-            ps.mulPose(Axis.XP.rotationDegrees(-90));
+            ps.rotate(Axis.XP.rotationDegrees(-90));
             ps.translate(0, -.4375, 0.875);
             RenderHelper.drawRectangle(builder, ps, 0.4375f, 0.5625f, 0.4375f, 0.5625f, sprite, combinedLight, 1.0f);
         });

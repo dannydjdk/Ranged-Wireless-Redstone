@@ -2,7 +2,6 @@ package com.dannyandson.rangedwirelessredstone.blocks;
 
 import com.dannyandson.rangedwirelessredstone.gui.ChannelSelectGUI;
 import com.dannyandson.rangedwirelessredstone.logic.IWirelessComponent;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -32,13 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReceiverBlock extends BaseEntityBlock {
-
-    public static final MapCodec<ReceiverBlock> CODEC = simpleCodec(ReceiverBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     private final static VoxelShape shape = Shapes.or(
             Shapes.or(
@@ -115,7 +107,7 @@ public class ReceiverBlock extends BaseEntityBlock {
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction direction) {
+    protected boolean shouldRedstoneWireConnectTo(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction direction) {
         return true;
     }
 
