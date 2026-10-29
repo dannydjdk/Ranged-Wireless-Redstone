@@ -55,10 +55,10 @@ repositories {
 }
 
 dependencies {
-    implementation "curse.maven:tiny-redstone-453746:8968085"
+    implementation "curse.maven:tiny-redstone-453746:9363096"
 
-    implementation "curse.maven:jei-238222:8941416"
-    implementation "curse.maven:jade-324717:8892782"
+    implementation "curse.maven:jei-238222:9318906"
+    implementation "curse.maven:jade-324717:9042207"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -35,7 +35,7 @@ public class RangedWirelessRedstone
         }
 
         //load configs
-        modContainer.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
+        modContainer.registerConfig(ModConfig.Type.SYNCED, Config.SERVER_CONFIG);
 
         // Note: TheOneProbe compat excluded from build until TOP is available for 26.1
     }
